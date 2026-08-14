@@ -133,7 +133,6 @@
 
   <div class="container">
 
-    <!-- Tarjeta de Autenticación / Perfil -->
     <div class="card" id="auth-card">
       <div class="nav-tabs" id="tab-header">
         <button class="tab-btn active" onclick="switchTab('search')">Buscar</button>
@@ -141,7 +140,7 @@
         <button class="tab-btn" onclick="switchTab('register')">Registrarse</button>
       </div>
 
-      <!-- Buscador de Invocador -->
+      <!-- Buscador -->
       <div id="tab-search">
         <h3>Buscar Invocador en Vivo</h3>
         <input type="text" id="search-name" placeholder="Nombre de Invocador (ej. Faker)" />
@@ -150,7 +149,7 @@
         <div id="search-result" style="margin-top: 15px;"></div>
       </div>
 
-      <!-- Formulario de Login -->
+      <!-- Login -->
       <div id="tab-login" class="hidden">
         <h3>Iniciar Sesión</h3>
         <input type="email" id="login-email" placeholder="Correo Electrónico" />
@@ -159,12 +158,12 @@
         <p id="login-msg" style="color: #ef4444; margin-top: 10px;"></p>
       </div>
 
-      <!-- Formulario de Registro -->
+      <!-- Registro -->
       <div id="tab-register" class="hidden">
         <h3>Crear Cuenta en SEBISX</h3>
-        <input type="text" id="reg-username" placeholder="Nombre de Usuario (para la red social)" />
+        <input type="text" id="reg-username" placeholder="Nombre de Usuario" />
         <input type="email" id="reg-email" placeholder="Correo Electrónico" />
-        <input type="password" id="reg-password" placeholder="Contraseña" />
+        <input type="password" id="reg-password" placeholder="Contraseña (mínimo 6 caracteres)" />
         <hr style="border-color: #334155; margin: 15px 0;" />
         <p style="font-size: 0.9rem; color: var(--text-muted);">Vincula tu cuenta de League of Legends:</p>
         <input type="text" id="reg-gamename" placeholder="Nombre en LoL (ej. Sebisx)" />
@@ -173,7 +172,7 @@
         <p id="reg-msg" style="color: #ef4444; margin-top: 10px;"></p>
       </div>
 
-      <!-- Vista de Perfil Autenticado -->
+      <!-- Perfil -->
       <div id="tab-profile" class="hidden">
         <div class="profile-header">
           <img id="user-icon" class="profile-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" alt="Icono" />
@@ -190,7 +189,7 @@
   </div>
 
   <script>
-    const BACKEND_URL = 'https://sebisx-backend.onrender.com';
+    const API_URL = 'https://sebisx-backend.onrender.com/api';
 
     function switchTab(tabName) {
       document.getElementById('tab-search').classList.add('hidden');
@@ -228,7 +227,7 @@
       resDiv.innerHTML = '<p>Buscando datos...</p>';
 
       try {
-        const res = await fetch(`${BACKEND_URL}/api/player/${encodeURIComponent(name)}/${encodeURIComponent(tag)}`);
+        const res = await fetch(`${API_URL}/player/${encodeURIComponent(name)}/${encodeURIComponent(tag)}`);
         const data = await res.json();
 
         if (res.ok) {
@@ -261,8 +260,11 @@
       const tagLine = document.getElementById('reg-tagline').value.trim();
       const msg = document.getElementById('reg-msg');
 
+      msg.style.color = '#38bdf8';
+      msg.innerText = 'Creando cuenta...';
+
       try {
-        const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
+        const res = await fetch(`${API_URL}/auth/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password, username, gameName, tagLine })
@@ -271,11 +273,14 @@
 
         if (res.ok) {
           alert('¡Registro exitoso! Ya puedes iniciar sesión.');
+          msg.innerText = '';
           switchTab('login');
         } else {
+          msg.style.color = '#ef4444';
           msg.innerText = data.error || 'Error al registrarse';
         }
       } catch (err) {
+        msg.style.color = '#ef4444';
         msg.innerText = 'Error de conexión con el servidor.';
       }
     }
@@ -285,8 +290,11 @@
       const password = document.getElementById('login-password').value;
       const msg = document.getElementById('login-msg');
 
+      msg.style.color = '#38bdf8';
+      msg.innerText = 'Iniciando sesión...';
+
       try {
-        const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
+        const res = await fetch(`${API_URL}/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
@@ -297,9 +305,11 @@
           localStorage.setItem('sebisx_session', JSON.stringify(data));
           loadUserProfile(data);
         } else {
+          msg.style.color = '#ef4444';
           msg.innerText = data.error || 'Credenciales incorrectas';
         }
       } catch (err) {
+        msg.style.color = '#ef4444';
         msg.innerText = 'Error de conexión con el servidor.';
       }
     }
@@ -312,9 +322,8 @@
       document.getElementById('user-display-name').innerText = `@${profile.username}`;
       document.getElementById('user-lol-id').innerText = `${profile.game_name} #${profile.tag_line}`;
 
-      // Cargar datos en vivo de LoL para el perfil
       try {
-        const res = await fetch(`${BACKEND_URL}/api/player/${encodeURIComponent(profile.game_name)}/${encodeURIComponent(profile.tag_line)}`);
+        const res = await fetch(`${API_URL}/player/${encodeURIComponent(profile.game_name)}/${encodeURIComponent(profile.tag_line)}`);
         const lolData = await res.json();
         if (res.ok) {
           document.getElementById('user-icon').src = `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/${lolData.profileIconId}.png`;
@@ -328,7 +337,7 @@
           }
         }
       } catch (e) {
-        console.log('Error cargando estado de LoL en perfil');
+        console.log('Error al cargar perfil de LoL');
       }
     }
 
@@ -338,7 +347,6 @@
       switchTab('login');
     }
 
-    // Verificar si hay sesión guardada al abrir la página
     window.onload = () => {
       const savedSession = localStorage.getItem('sebisx_session');
       if (savedSession) {
