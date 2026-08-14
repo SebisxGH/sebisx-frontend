@@ -3,356 +3,318 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SEBISX.COM - Social Network & League Tracker</title>
+  <title>SEBISX.COM - Comunidad LoL</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
-      --accent-color: #38bdf8;
-      --text-color: #f8fafc;
-      --text-muted: #94a3b8;
+      --bg-dark: #090d16;
+      --card-bg: #121824;
+      --card-border: #1e293b;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
     }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      margin: 0;
-      padding: 20px;
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* Top Navbar */
+    header.navbar {
+      height: 60px;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--card-border);
       display: flex;
-      flex-direction: column;
       align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
-    header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+    .nav-left { display: flex; align-items: center; gap: 15px; }
+    .brand-logo { color: var(--accent); font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; }
+    .search-bar { background: #0b0f19; border: 1px solid var(--card-border); border-radius: 20px; padding: 6px 14px; display: flex; align-items: center; gap: 8px; width: 260px; }
+    .search-bar input { background: transparent; border: none; color: white; outline: none; width: 100%; font-size: 0.9rem; }
 
-    h1 {
-      color: var(--accent-color);
-      margin-bottom: 5px;
-      font-size: 2.5rem;
-    }
+    .nav-center { display: flex; gap: 25px; }
+    .nav-center i { font-size: 1.2rem; color: var(--text-sub); cursor: pointer; padding: 10px; transition: 0.2s; }
+    .nav-center i.active, .nav-center i:hover { color: var(--accent); }
 
-    .container {
-      width: 100%;
-      max-width: 600px;
-      display: flex;
-      flex-direction: column;
+    .nav-right { display: flex; align-items: center; gap: 15px; }
+    .user-pill { display: flex; align-items: center; gap: 8px; background: #0b0f19; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--card-border); cursor: pointer; }
+    .user-pill img { width: 28px; height: 28px; border-radius: 50%; }
+
+    /* Main Grid Layout */
+    .app-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr 300px;
       gap: 20px;
-    }
-
-    .card {
-      background-color: var(--card-bg);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-    }
-
-    .nav-tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 10px;
-      background: #334155;
-      border: none;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .tab-btn.active {
-      background: var(--accent-color);
-      color: #0f172a;
-    }
-
-    input, button {
+      max-width: 1400px;
+      margin: 20px auto;
       width: 100%;
-      padding: 12px;
-      margin-top: 8px;
-      border-radius: 6px;
-      border: 1px solid #334155;
-      box-sizing: border-box;
-      background-color: #0f172a;
-      color: white;
+      padding: 0 20px;
+      flex: 1;
     }
 
-    button.primary-btn {
-      background-color: var(--accent-color);
-      color: #0f172a;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-      margin-top: 15px;
-    }
+    /* Sidebar Left */
+    .sidebar-left .menu-group { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 10px; margin-bottom: 15px; }
+    .menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; color: var(--text-sub); border-radius: 8px; cursor: pointer; text-decoration: none; font-size: 0.95rem; font-weight: 500; }
+    .menu-item:hover, .menu-item.active { background: #1e293b; color: var(--accent); }
 
-    button.primary-btn:hover {
-      opacity: 0.9;
-    }
+    /* Feed Central */
+    .feed-container { display: flex; flex-direction: column; gap: 20px; }
 
-    .profile-header {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
+    /* Profile Banner Header */
+    .profile-hero { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; position: relative; }
+    .banner-img-container { height: 220px; width: 100%; position: relative; background: #1e293b; }
+    .banner-img { width: 100%; height: 100%; object-fit: cover; }
+    .btn-edit-banner { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.6); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; backdrop-filter: blur(4px); }
+    .btn-edit-banner:hover { background: rgba(0,0,0,0.8); }
 
-    .profile-icon {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      border: 3px solid var(--accent-color);
-    }
+    .hero-info { padding: 0 20px 20px 20px; display: flex; align-items: flex-end; justify-content: space-between; margin-top: -50px; }
+    .hero-avatar-box { display: flex; align-items: flex-end; gap: 15px; }
+    .hero-avatar { width: 110px; height: 110px; border-radius: 50%; border: 4px solid var(--card-bg); background: var(--bg-dark); }
+    .hero-details h2 { font-size: 1.5rem; display: flex; align-items: center; gap: 6px; }
+    .hero-details p { color: var(--text-sub); font-size: 0.9rem; }
 
-    .status-badge {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.85rem;
-      font-weight: bold;
-      margin-top: 5px;
-    }
+    /* Post Composer */
+    .post-composer { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; }
+    .composer-input { display: flex; align-items: center; gap: 12px; }
+    .composer-input img { width: 40px; height: 40px; border-radius: 50%; }
+    .composer-input input { width: 100%; background: #0b0f19; border: 1px solid var(--card-border); padding: 12px; border-radius: 20px; color: white; outline: none; }
+    .composer-actions { display: flex; justify-content: space-between; margin-top: 12px; border-top: 1px solid var(--card-border); padding-top: 10px; }
+    .action-btn { background: transparent; border: none; color: var(--text-sub); font-size: 0.85rem; display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 6px 12px; border-radius: 6px; }
+    .action-btn:hover { background: #1e293b; color: var(--accent); }
 
-    .status-ingame { background-color: #22c55e; color: black; }
-    .status-offline { background-color: #64748b; color: white; }
+    /* Feed Post Card */
+    .post-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; }
+    .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .post-header img { width: 42px; height: 42px; border-radius: 50%; }
+    .post-author { font-size: 0.95rem; font-weight: bold; }
+    .post-time { font-size: 0.75rem; color: var(--text-sub); }
+    .post-content { font-size: 0.95rem; line-height: 1.4; margin-bottom: 12px; }
+    .post-media { width: 100%; border-radius: 8px; max-height: 400px; object-fit: cover; }
 
-    .hidden { display: none; }
+    /* Right Sidebar Widgets */
+    .widget-box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+    .widget-title { font-size: 0.9rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-sub); margin-bottom: 12px; display: flex; justify-content: space-between; }
+    .trend-item { margin-bottom: 10px; cursor: pointer; }
+    .trend-tag { font-size: 0.85rem; font-weight: bold; color: var(--text-main); }
+    .trend-posts { font-size: 0.75rem; color: var(--text-sub); }
+
+    /* Modal Change Banner */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; align-items: center; justify-content: center; }
+    .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 12px; width: 90%; max-width: 450px; }
+    .modal-content h3 { margin-bottom: 15px; }
+    .modal-content input { width: 100%; padding: 10px; background: #0b0f19; border: 1px solid var(--card-border); border-radius: 6px; color: white; margin-bottom: 15px; }
+    .modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
+    .btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+    .btn-primary { background: var(--accent); color: var(--bg-dark); }
+    .btn-secondary { background: #334155; color: white; }
+
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>SEBISX.COM</h1>
-    <p style="color: var(--text-muted)">Comunidad Social & Estado de Invocadores en Tiempo Real</p>
-  </header>
-
-  <div class="container">
-
-    <div class="card" id="auth-card">
-      <div class="nav-tabs" id="tab-header">
-        <button class="tab-btn active" onclick="switchTab('search')">Buscar</button>
-        <button class="tab-btn" onclick="switchTab('login')">Ingresar</button>
-        <button class="tab-btn" onclick="switchTab('register')">Registrarse</button>
-      </div>
-
-      <!-- Buscador -->
-      <div id="tab-search">
-        <h3>Buscar Invocador en Vivo</h3>
-        <input type="text" id="search-name" placeholder="Nombre de Invocador (ej. Faker)" />
-        <input type="text" id="search-tag" placeholder="Tag (ej. KR1)" />
-        <button class="primary-btn" onclick="searchSummoner()">Buscar Estado</button>
-        <div id="search-result" style="margin-top: 15px;"></div>
-      </div>
-
-      <!-- Login -->
-      <div id="tab-login" class="hidden">
-        <h3>Iniciar Sesión</h3>
-        <input type="email" id="login-email" placeholder="Correo Electrónico" />
-        <input type="password" id="login-password" placeholder="Contraseña" />
-        <button class="primary-btn" onclick="handleLogin()">Entrar</button>
-        <p id="login-msg" style="color: #ef4444; margin-top: 10px;"></p>
-      </div>
-
-      <!-- Registro -->
-      <div id="tab-register" class="hidden">
-        <h3>Crear Cuenta en SEBISX</h3>
-        <input type="text" id="reg-username" placeholder="Nombre de Usuario" />
-        <input type="email" id="reg-email" placeholder="Correo Electrónico" />
-        <input type="password" id="reg-password" placeholder="Contraseña (mínimo 6 caracteres)" />
-        <hr style="border-color: #334155; margin: 15px 0;" />
-        <p style="font-size: 0.9rem; color: var(--text-muted);">Vincula tu cuenta de League of Legends:</p>
-        <input type="text" id="reg-gamename" placeholder="Nombre en LoL (ej. Sebisx)" />
-        <input type="text" id="reg-tagline" placeholder="Tagline en LoL (ej. LAS)" />
-        <button class="primary-btn" onclick="handleRegister()">Registrarme</button>
-        <p id="reg-msg" style="color: #ef4444; margin-top: 10px;"></p>
-      </div>
-
-      <!-- Perfil -->
-      <div id="tab-profile" class="hidden">
-        <div class="profile-header">
-          <img id="user-icon" class="profile-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" alt="Icono" />
-          <div>
-            <h2 id="user-display-name" style="margin: 0;"></h2>
-            <p id="user-lol-id" style="margin: 5px 0; color: var(--text-muted);"></p>
-            <span id="user-game-status" class="status-badge status-offline">Desconectado</span>
-          </div>
-        </div>
-        <button class="primary-btn" onclick="handleLogout()" style="background-color: #ef4444; color: white;">Cerrar Sesión</button>
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-left">
+      <span class="brand-logo"><i class="fa-solid fa-shield-halved"></i> SEBISX</span>
+      <div class="search-bar">
+        <i class="fa-solid fa-magnifying-glass" style="color: var(--text-sub);"></i>
+        <input type="text" id="top-search" placeholder="Buscar en Comunidad LoL..." />
       </div>
     </div>
+    <div class="nav-center">
+      <i class="fa-solid fa-house active"></i>
+      <i class="fa-solid fa-user-group"></i>
+      <i class="fa-solid fa-gamepad"></i>
+      <i class="fa-solid fa-tv"></i>
+    </div>
+    <div class="nav-right">
+      <div class="user-pill" id="nav-user-pill" onclick="toggleAuthModal()">
+        <img id="nav-avatar" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" />
+        <span id="nav-username" style="font-size:0.85rem; font-weight:bold;">Iniciar Sesión</span>
+      </div>
+    </div>
+  </header>
 
+  <!-- Main Grid Layout -->
+  <div class="app-layout">
+
+    <!-- Left Sidebar -->
+    <aside class="sidebar-left">
+      <div class="menu-group">
+        <a class="menu-item active"><i class="fa-solid fa-house"></i> Inicio</a>
+        <a class="menu-item"><i class="fa-solid fa-compass"></i> Explorar</a>
+        <a class="menu-item"><i class="fa-solid fa-bell"></i> Notificaciones</a>
+        <a class="menu-item"><i class="fa-solid fa-bookmark"></i> Guardados</a>
+        <a class="menu-item"><i class="fa-solid fa-trophy"></i> Torneos</a>
+      </div>
+      <div class="menu-group">
+        <span style="font-size:0.75rem; color:var(--text-sub); font-weight:bold; padding: 0 10px;">GRUPOS DESTACADOS</span>
+        <a class="menu-item" style="margin-top:8px;"><i class="fa-solid fa-users"></i> Main Mordekaiser</a>
+        <a class="menu-item"><i class="fa-solid fa-users"></i> LoL Latam Army</a>
+        <a class="menu-item"><i class="fa-solid fa-users"></i> TFT Comunidad</a>
+      </div>
+    </aside>
+
+    <!-- Center Feed -->
+    <main class="feed-container">
+
+      <!-- Profile Header / Banner Area -->
+      <section class="profile-hero">
+        <div class="banner-img-container">
+          <img id="profile-banner" class="banner-img" src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Summoner_0.jpg" alt="Portada" />
+          <button class="btn-edit-banner" onclick="openBannerModal()"><i class="fa-solid fa-camera"></i> Cambiar Portada</button>
+        </div>
+        <div class="hero-info">
+          <div class="hero-avatar-box">
+            <img id="profile-avatar" class="hero-avatar" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" />
+            <div class="hero-details">
+              <h2 id="profile-title">Comunidad LoL <i class="fa-solid fa-circle-check" style="color:var(--accent); font-size:1rem;"></i></h2>
+              <p id="profile-subtitle">Únete, comparte jugadas y sube de elo junto a otros invocadores.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Post Publisher -->
+      <section class="post-composer">
+        <div class="composer-input">
+          <img id="composer-avatar" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" />
+          <input type="text" placeholder="¿Qué estás pensando, invocador?" />
+        </div>
+        <div class="composer-actions">
+          <button class="action-btn"><i class="fa-solid fa-image" style="color:#22c55e;"></i> Foto/Video</button>
+          <button class="action-btn"><i class="fa-solid fa-poll" style="color:#38bdf8;"></i> Encuesta</button>
+          <button class="action-btn"><i class="fa-solid fa-face-smile" style="color:#eab308;"></i> Estado</button>
+        </div>
+      </section>
+
+      <!-- Feed Post Dummy -->
+      <article class="post-card">
+        <div class="post-header">
+          <img src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/548.png" />
+          <div>
+            <div class="post-author">Comunidad LoL <i class="fa-solid fa-circle-check" style="color:var(--accent); font-size:0.8rem;"></i></div>
+            <div class="post-time">Hace 2 horas • <i class="fa-solid fa-earth-americas"></i></div>
+          </div>
+        </div>
+        <div class="post-content">
+          ¡Bienvenidos a la red oficial SEBISX.COM! 🔥 Registra tu cuenta para vincular tus estadísticas de invocador en tiempo real.
+        </div>
+        <img class="post-media" src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Mordekaiser_0.jpg" />
+      </article>
+
+    </main>
+
+    <!-- Right Sidebar -->
+    <aside class="sidebar-right">
+      <div class="widget-box">
+        <div class="widget-title">Acerca de</div>
+        <p style="font-size:0.85rem; color:var(--text-sub); line-height:1.4;">Comunidad creada para todos los jugadores de League of Legends. Comparte jugadas, guías y memes del mundo de Runaterra.</p>
+      </div>
+
+      <div class="widget-box">
+        <div class="widget-title">Temas del momento</div>
+        <div class="trend-item">
+          <div class="trend-tag">#Worlds2026</div>
+          <div class="trend-posts">14,2 mil publicaciones</div>
+        </div>
+        <div class="trend-item">
+          <div class="trend-tag">#ParcheLoL</div>
+          <div class="trend-posts">8,7 mil publicaciones</div>
+        </div>
+        <div class="trend-item">
+          <div class="trend-tag">#MainMordekaiser</div>
+          <div class="trend-posts">5,1 mil publicaciones</div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Modal Change Banner -->
+  <div class="modal" id="modal-banner">
+    <div class="modal-content">
+      <h3>Cambiar Imagen de Portada</h3>
+      <p style="font-size:0.85rem; color:var(--text-sub); margin-bottom:10px;">Ingresa la URL directa de la imagen (splash art o imagen de internet):</p>
+      <input type="text" id="input-banner-url" placeholder="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aatrox_0.jpg" />
+      <div class="modal-btns">
+        <button class="btn btn-secondary" onclick="closeBannerModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveBannerUrl()">Guardar Portada</button>
+      </div>
+    </div>
   </div>
 
   <script>
     const API_URL = 'https://sebisx-backend.onrender.com/api';
+    let currentUser = null;
 
-    function switchTab(tabName) {
-      document.getElementById('tab-search').classList.add('hidden');
-      document.getElementById('tab-login').classList.add('hidden');
-      document.getElementById('tab-register').classList.add('hidden');
-      document.getElementById('tab-profile').classList.add('hidden');
-
-      const tabs = document.querySelectorAll('.tab-btn');
-      tabs.forEach(t => t.classList.remove('active'));
-
-      if(tabName === 'search') {
-        document.getElementById('tab-search').classList.remove('hidden');
-        tabs[0].classList.add('active');
-      } else if(tabName === 'login') {
-        document.getElementById('tab-login').classList.remove('hidden');
-        tabs[1].classList.add('active');
-      } else if(tabName === 'register') {
-        document.getElementById('tab-register').classList.remove('hidden');
-        tabs[2].classList.add('active');
-      } else if(tabName === 'profile') {
-        document.getElementById('tab-profile').classList.remove('hidden');
-      }
+    function openBannerModal() {
+      document.getElementById('modal-banner').style.display = 'flex';
     }
 
-    async function searchSummoner() {
-      const name = document.getElementById('search-name').value.trim();
-      const tag = document.getElementById('search-tag').value.trim();
-      const resDiv = document.getElementById('search-result');
-
-      if (!name || !tag) {
-        resDiv.innerHTML = '<p style="color: #ef4444;">Por favor completa ambos campos.</p>';
-        return;
-      }
-
-      resDiv.innerHTML = '<p>Buscando datos...</p>';
-
-      try {
-        const res = await fetch(`${API_URL}/player/${encodeURIComponent(name)}/${encodeURIComponent(tag)}`);
-        const data = await res.json();
-
-        if (res.ok) {
-          const statusHTML = data.inGame 
-            ? '<span class="status-badge status-ingame">🎮 ¡En Partida Ahora Mismo!</span>' 
-            : '<span class="status-badge status-offline">No está en partida</span>';
-
-          resDiv.innerHTML = `
-            <div style="display:flex; align-items:center; gap: 10px; background: #0f172a; padding: 10px; border-radius: 8px;">
-              <img src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/${data.profileIconId}.png" style="width: 50px; border-radius: 50%;" />
-              <div>
-                <strong>${data.gameName} #${data.tagLine}</strong> (Nivel ${data.summonerLevel})<br/>
-                ${statusHTML}
-              </div>
-            </div>
-          `;
-        } else {
-          resDiv.innerHTML = `<p style="color: #ef4444;">${data.error || 'Jugador no encontrado'}</p>`;
-        }
-      } catch (err) {
-        resDiv.innerHTML = '<p style="color: #ef4444;">Error al conectar con el servidor.</p>';
-      }
+    function closeBannerModal() {
+      document.getElementById('modal-banner').style.display = 'none';
     }
 
-    async function handleRegister() {
-      const username = document.getElementById('reg-username').value.trim();
-      const email = document.getElementById('reg-email').value.trim();
-      const password = document.getElementById('reg-password').value;
-      const gameName = document.getElementById('reg-gamename').value.trim();
-      const tagLine = document.getElementById('reg-tagline').value.trim();
-      const msg = document.getElementById('reg-msg');
-
-      msg.style.color = '#38bdf8';
-      msg.innerText = 'Creando cuenta...';
+    async function saveBannerUrl() {
+      const bannerUrl = document.getElementById('input-banner-url').value.trim();
+      if (!bannerUrl || !currentUser) return;
 
       try {
-        const res = await fetch(`${API_URL}/auth/register`, {
+        const res = await fetch(`${API_URL}/profile/update-banner`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, username, gameName, tagLine })
+          body: JSON.stringify({ userId: currentUser.user.id, bannerUrl })
         });
         const data = await res.json();
-
         if (res.ok) {
-          alert('¡Registro exitoso! Ya puedes iniciar sesión.');
-          msg.innerText = '';
-          switchTab('login');
+          document.getElementById('profile-banner').src = bannerUrl;
+          closeBannerModal();
         } else {
-          msg.style.color = '#ef4444';
-          msg.innerText = data.error || 'Error al registrarse';
+          alert('Error actualizando la portada.');
         }
       } catch (err) {
-        msg.style.color = '#ef4444';
-        msg.innerText = 'Error de conexión con el servidor.';
+        alert('Error de conexión con el servidor.');
       }
     }
 
-    async function handleLogin() {
-      const email = document.getElementById('login-email').value.trim();
-      const password = document.getElementById('login-password').value;
-      const msg = document.getElementById('login-msg');
-
-      msg.style.color = '#38bdf8';
-      msg.innerText = 'Iniciando sesión...';
-
-      try {
-        const res = await fetch(`${API_URL}/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-        const data = await res.json();
-
-        if (res.ok) {
-          localStorage.setItem('sebisx_session', JSON.stringify(data));
-          loadUserProfile(data);
-        } else {
-          msg.style.color = '#ef4444';
-          msg.innerText = data.error || 'Credenciales incorrectas';
-        }
-      } catch (err) {
-        msg.style.color = '#ef4444';
-        msg.innerText = 'Error de conexión con el servidor.';
-      }
-    }
-
-    async function loadUserProfile(authData) {
-      document.getElementById('tab-header').classList.add('hidden');
-      switchTab('profile');
-
-      const profile = authData.profile;
-      document.getElementById('user-display-name').innerText = `@${profile.username}`;
-      document.getElementById('user-lol-id').innerText = `${profile.game_name} #${profile.tag_line}`;
-
-      try {
-        const res = await fetch(`${API_URL}/player/${encodeURIComponent(profile.game_name)}/${encodeURIComponent(profile.tag_line)}`);
-        const lolData = await res.json();
-        if (res.ok) {
-          document.getElementById('user-icon').src = `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/${lolData.profileIconId}.png`;
-          const statusBadge = document.getElementById('user-game-status');
-          if (lolData.inGame) {
-            statusBadge.className = 'status-badge status-ingame';
-            statusBadge.innerText = '🎮 Jugando una partida';
-          } else {
-            statusBadge.className = 'status-badge status-offline';
-            statusBadge.innerText = 'Fuera de partida';
-          }
-        }
-      } catch (e) {
-        console.log('Error al cargar perfil de LoL');
-      }
-    }
-
-    function handleLogout() {
-      localStorage.removeItem('sebisx_session');
-      document.getElementById('tab-header').classList.remove('hidden');
-      switchTab('login');
-    }
-
-    window.onload = () => {
+    function loadUserSession() {
       const savedSession = localStorage.getItem('sebisx_session');
       if (savedSession) {
-        loadUserProfile(JSON.parse(savedSession));
+        currentUser = JSON.parse(savedSession);
+        const profile = currentUser.profile;
+
+        document.getElementById('nav-username').innerText = `@${profile.username}`;
+        document.getElementById('profile-title').innerText = `@${profile.username}`;
+        document.getElementById('profile-subtitle').innerText = `Invocador: ${profile.game_name} #${profile.tag_line}`;
+
+        if (profile.banner_url) {
+          document.getElementById('profile-banner').src = profile.banner_url;
+        }
+
+        // Cargar ícono de LoL real en vivo
+        fetch(`${API_URL}/player/${encodeURIComponent(profile.game_name)}/${encodeURIComponent(profile.tag_line)}`)
+          .then(res => res.json())
+          .then(lolData => {
+            if (lolData.profileIconId) {
+              const iconUrl = `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/${lolData.profileIconId}.png`;
+              document.getElementById('nav-avatar').src = iconUrl;
+              document.getElementById('profile-avatar').src = iconUrl;
+              document.getElementById('composer-avatar').src = iconUrl;
+            }
+          })
+          .catch(() => console.log('Uso de ícono predeterminado'));
       }
-    };
+    }
+
+    window.onload = loadUserSession;
   </script>
 </body>
 </html>
