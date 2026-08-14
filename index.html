@@ -106,7 +106,7 @@
             }
 
             try {
-                const response = await fetch(`http://localhost:5000/api/player/${encodeURIComponent(name)}/${encodeURIComponent(tag)}`);
+                const response = await fetch(`https://sebisx-backend.onrender.com/api/player/${encodeURIComponent(name)}/${encodeURIComponent(tag)}`);
                 const data = await response.json();
 
                 if (!data.success) {
