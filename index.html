@@ -1,166 +1,350 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEBISX.COM - Red Social LoL</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #0f1923; color: #ece8e1; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        
-        header { text-align: center; margin-bottom: 30px; margin-top: 20px; }
-        header h1 { color: #ff4655; font-size: 2.8rem; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,70,85,0.4); }
-        header p { color: #8b978f; margin-top: 5px; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEBISX.COM - Social Network & League Tracker</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent-color: #38bdf8;
+      --text-color: #f8fafc;
+      --text-muted: #94a3b8;
+    }
 
-        .container { width: 100%; max-width: 500px; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        .card { background: #1f2b3e; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); margin-bottom: 20px; }
-        
-        .input-group { display: flex; gap: 10px; margin-top: 10px; }
-        input, textarea { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #364966; background: #0f1923; color: #fff; font-size: 1rem; }
-        textarea { resize: none; height: 80px; width: 100%; margin-bottom: 10px; }
-        
-        button { padding: 12px 20px; background: #ff4655; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        button:hover { background: #e03e4d; }
-        .btn-full { width: 100%; }
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-        .profile-card { display: none; border-left: 5px solid #8b978f; }
-        .profile-card.online { border-left-color: #00e676; }
-        .profile-card.ingame { border-left-color: #ff4655; }
+    h1 {
+      color: var(--accent-color);
+      margin-bottom: 5px;
+      font-size: 2.5rem;
+    }
 
-        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; margin-bottom: 10px; }
-        .badge-offline { background: rgba(139, 151, 143, 0.2); color: #8b978f; }
-        .badge-ingame { background: rgba(255, 70, 85, 0.2); color: #ff4655; animation: pulse 1.5s infinite; }
+    .container {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
 
-        .social-links { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-social { text-decoration: none; padding: 8px 15px; border-radius: 6px; font-size: 0.9rem; font-weight: bold; color: white; flex: 1; text-align: center; }
-        .btn-discord { background: #5865F2; }
-        .btn-twitch { background: #9146FF; }
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
 
-        .feed-header { border-bottom: 2px solid #ff4655; padding-bottom: 10px; margin-bottom: 15px; margin-top: 30px; }
-        .post { background: #1f2b3e; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 3px solid #ff4655; }
-        .post-author { color: #00e676; font-weight: bold; margin-bottom: 5px; }
-        .post-time { color: #8b978f; font-size: 0.8rem; margin-top: 10px; display: block; }
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
 
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-    </style>
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      background: #334155;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .tab-btn.active {
+      background: var(--accent-color);
+      color: #0f172a;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      box-sizing: border-box;
+      background-color: #0f172a;
+      color: white;
+    }
+
+    button.primary-btn {
+      background-color: var(--accent-color);
+      color: #0f172a;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    button.primary-btn:hover {
+      opacity: 0.9;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .profile-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid var(--accent-color);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .status-ingame { background-color: #22c55e; color: black; }
+    .status-offline { background-color: #64748b; color: white; }
+
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
 
-    <header>
-        <h1>SEBISX.COM</h1>
-        <p>Comunidad y Estado en Tiempo Real</p>
-    </header>
+  <header>
+    <h1>SEBISX.COM</h1>
+    <p style="color: var(--text-muted)">Comunidad Social & Estado de Invocadores en Tiempo Real</p>
+  </header>
 
-    <div class="container">
-        <!-- BUSCADOR -->
-        <div class="card">
-            <h3 style="color: #fff;">Radar de Invocadores</h3>
-            <div class="input-group">
-                <input type="text" id="gameName" placeholder="Nombre (ej: Faker)">
-                <input type="text" id="tagLine" placeholder="Tag (ej: KR1)" style="max-width: 100px;">
-                <button onclick="buscarJugador()">Buscar</button>
-            </div>
+  <div class="container">
+
+    <!-- Tarjeta de Autenticación / Perfil -->
+    <div class="card" id="auth-card">
+      <div class="nav-tabs" id="tab-header">
+        <button class="tab-btn active" onclick="switchTab('search')">Buscar</button>
+        <button class="tab-btn" onclick="switchTab('login')">Ingresar</button>
+        <button class="tab-btn" onclick="switchTab('register')">Registrarse</button>
+      </div>
+
+      <!-- Buscador de Invocador -->
+      <div id="tab-search">
+        <h3>Buscar Invocador en Vivo</h3>
+        <input type="text" id="search-name" placeholder="Nombre de Invocador (ej. Faker)" />
+        <input type="text" id="search-tag" placeholder="Tag (ej. KR1)" />
+        <button class="primary-btn" onclick="searchSummoner()">Buscar Estado</button>
+        <div id="search-result" style="margin-top: 15px;"></div>
+      </div>
+
+      <!-- Formulario de Login -->
+      <div id="tab-login" class="hidden">
+        <h3>Iniciar Sesión</h3>
+        <input type="email" id="login-email" placeholder="Correo Electrónico" />
+        <input type="password" id="login-password" placeholder="Contraseña" />
+        <button class="primary-btn" onclick="handleLogin()">Entrar</button>
+        <p id="login-msg" style="color: #ef4444; margin-top: 10px;"></p>
+      </div>
+
+      <!-- Formulario de Registro -->
+      <div id="tab-register" class="hidden">
+        <h3>Crear Cuenta en SEBISX</h3>
+        <input type="text" id="reg-username" placeholder="Nombre de Usuario (para la red social)" />
+        <input type="email" id="reg-email" placeholder="Correo Electrónico" />
+        <input type="password" id="reg-password" placeholder="Contraseña" />
+        <hr style="border-color: #334155; margin: 15px 0;" />
+        <p style="font-size: 0.9rem; color: var(--text-muted);">Vincula tu cuenta de League of Legends:</p>
+        <input type="text" id="reg-gamename" placeholder="Nombre en LoL (ej. Sebisx)" />
+        <input type="text" id="reg-tagline" placeholder="Tagline en LoL (ej. LAS)" />
+        <button class="primary-btn" onclick="handleRegister()">Registrarme</button>
+        <p id="reg-msg" style="color: #ef4444; margin-top: 10px;"></p>
+      </div>
+
+      <!-- Vista de Perfil Autenticado -->
+      <div id="tab-profile" class="hidden">
+        <div class="profile-header">
+          <img id="user-icon" class="profile-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" alt="Icono" />
+          <div>
+            <h2 id="user-display-name" style="margin: 0;"></h2>
+            <p id="user-lol-id" style="margin: 5px 0; color: var(--text-muted);"></p>
+            <span id="user-game-status" class="status-badge status-offline">Desconectado</span>
+          </div>
         </div>
-
-        <!-- TARJETA DE PERFIL OCULTA HASTA BUSCAR -->
-        <div id="profileCard" class="card profile-card">
-            <span id="statusBadge" class="status-badge badge-offline">Desconectado</span>
-            <h2 id="playerName" style="color: #fff;">Nombre#Tag</h2>
-            <p id="gameDetails" style="margin-top: 8px; color: #8b978f;"></p>
-            <div class="social-links">
-                <a href="#" class="btn-social btn-discord">Unirse a Discord</a>
-                <a href="#" class="btn-social btn-twitch">Ver Stream</a>
-            </div>
-        </div>
-
-        <h3 class="feed-header" style="color: #fff;">Muro de la Comunidad</h3>
-
-        <!-- CAJA PARA CREAR PUBLICACIÓN -->
-        <div class="card">
-            <textarea id="postContent" placeholder="¿Buscas dúo? ¿Qué jugada hiciste hoy? Escribe algo..."></textarea>
-            <button class="btn-full" onclick="publicarMensaje()">Publicar</button>
-        </div>
-
-        <!-- AQUÍ APARECERÁN LOS POSTS -->
-        <div id="postsContainer">
-            <!-- Post de Ejemplo -->
-            <div class="post">
-                <div class="post-author">Sebisx (Admin)</div>
-                <p>¡Bienvenidos a la versión de prueba de SEBISX.COM! Empiecen a buscar a sus amigos para ver si están en partida. 🎮🔥</p>
-                <span class="post-time">Hace 5 minutos</span>
-            </div>
-        </div>
+        <button class="primary-btn" onclick="handleLogout()" style="background-color: #ef4444; color: white;">Cerrar Sesión</button>
+      </div>
     </div>
 
-    <script>
-        // Función para consultar la API de Riot
-        async function buscarJugador() {
-            const name = document.getElementById('gameName').value.trim();
-            const tag = document.getElementById('tagLine').value.trim();
-            const card = document.getElementById('profileCard');
+  </div>
 
-            if (!name || !tag) {
-                alert("Por favor ingresa Nombre y Tag.");
-                return;
-            }
+  <script>
+    const BACKEND_URL = 'https://sebisx-backend.onrender.com';
 
-            try {
-                const response = await fetch(`https://sebisx-backend.onrender.com/api/player/${encodeURIComponent(name)}/${encodeURIComponent(tag)}`);
-                const data = await response.json();
+    function switchTab(tabName) {
+      document.getElementById('tab-search').classList.add('hidden');
+      document.getElementById('tab-login').classList.add('hidden');
+      document.getElementById('tab-register').classList.add('hidden');
+      document.getElementById('tab-profile').classList.add('hidden');
 
-                if (!data.success) {
-                    alert("Error: " + (data.message || "Jugador no encontrado"));
-                    return;
-                }
+      const tabs = document.querySelectorAll('.tab-btn');
+      tabs.forEach(t => t.classList.remove('active'));
 
-                const player = data.player;
-                document.getElementById('playerName').innerText = `${player.gameName}#${player.tagLine}`;
+      if(tabName === 'search') {
+        document.getElementById('tab-search').classList.remove('hidden');
+        tabs[0].classList.add('active');
+      } else if(tabName === 'login') {
+        document.getElementById('tab-login').classList.remove('hidden');
+        tabs[1].classList.add('active');
+      } else if(tabName === 'register') {
+        document.getElementById('tab-register').classList.remove('hidden');
+        tabs[2].classList.add('active');
+      } else if(tabName === 'profile') {
+        document.getElementById('tab-profile').classList.remove('hidden');
+      }
+    }
 
-                const badge = document.getElementById('statusBadge');
-                const details = document.getElementById('gameDetails');
+    async function searchSummoner() {
+      const name = document.getElementById('search-name').value.trim();
+      const tag = document.getElementById('search-tag').value.trim();
+      const resDiv = document.getElementById('search-result');
 
-                if (player.isPlaying) {
-                    card.className = "card profile-card ingame";
-                    badge.className = "status-badge badge-ingame";
-                    badge.innerText = "🔴 EN PARTIDA";
-                    const mins = Math.floor(player.gameInfo.gameLength / 60);
-                    details.innerText = `Modo de juego: ${player.gameInfo.gameMode} - Tiempo: ~${mins} min`;
-                } else {
-                    card.className = "card profile-card online";
-                    badge.className = "status-badge badge-offline";
-                    badge.innerText = "🟢 DISPONIBLE";
-                    details.innerText = "No está en partida activa en este momento.";
-                }
+      if (!name || !tag) {
+        resDiv.innerHTML = '<p style="color: #ef4444;">Por favor completa ambos campos.</p>';
+        return;
+      }
 
-                card.style.display = "block";
+      resDiv.innerHTML = '<p>Buscando datos...</p>';
 
-            } catch (error) {
-                alert("Asegúrate de que tu servidor backend (node server.js) esté encendido.");
-            }
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/player/${encodeURIComponent(name)}/${encodeURIComponent(tag)}`);
+        const data = await res.json();
+
+        if (res.ok) {
+          const statusHTML = data.inGame 
+            ? '<span class="status-badge status-ingame">🎮 ¡En Partida Ahora Mismo!</span>' 
+            : '<span class="status-badge status-offline">No está en partida</span>';
+
+          resDiv.innerHTML = `
+            <div style="display:flex; align-items:center; gap: 10px; background: #0f172a; padding: 10px; border-radius: 8px;">
+              <img src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/${data.profileIconId}.png" style="width: 50px; border-radius: 50%;" />
+              <div>
+                <strong>${data.gameName} #${data.tagLine}</strong> (Nivel ${data.summonerLevel})<br/>
+                ${statusHTML}
+              </div>
+            </div>
+          `;
+        } else {
+          resDiv.innerHTML = `<p style="color: #ef4444;">${data.error || 'Jugador no encontrado'}</p>`;
         }
+      } catch (err) {
+        resDiv.innerHTML = '<p style="color: #ef4444;">Error al conectar con el servidor.</p>';
+      }
+    }
 
-        // Función para agregar publicaciones al muro
-        function publicarMensaje() {
-            const content = document.getElementById('postContent').value.trim();
-            if (!content) return; // Si está vacío no hace nada
+    async function handleRegister() {
+      const username = document.getElementById('reg-username').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const gameName = document.getElementById('reg-gamename').value.trim();
+      const tagLine = document.getElementById('reg-tagline').value.trim();
+      const msg = document.getElementById('reg-msg');
 
-            const container = document.getElementById('postsContainer');
-            
-            const nuevoPost = `
-                <div class="post">
-                    <div class="post-author">Invocador Anónimo</div>
-                    <p>${content}</p>
-                    <span class="post-time">Justo ahora</span>
-                </div>
-            `;
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, username, gameName, tagLine })
+        });
+        const data = await res.json();
 
-            // Agrega el post nuevo arriba de los viejos
-            container.innerHTML = nuevoPost + container.innerHTML;
-            
-            // Limpia la caja de texto
-            document.getElementById('postContent').value = '';
+        if (res.ok) {
+          alert('¡Registro exitoso! Ya puedes iniciar sesión.');
+          switchTab('login');
+        } else {
+          msg.innerText = data.error || 'Error al registrarse';
         }
-    </script>
+      } catch (err) {
+        msg.innerText = 'Error de conexión con el servidor.';
+      }
+    }
+
+    async function handleLogin() {
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const msg = document.getElementById('login-msg');
+
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          localStorage.setItem('sebisx_session', JSON.stringify(data));
+          loadUserProfile(data);
+        } else {
+          msg.innerText = data.error || 'Credenciales incorrectas';
+        }
+      } catch (err) {
+        msg.innerText = 'Error de conexión con el servidor.';
+      }
+    }
+
+    async function loadUserProfile(authData) {
+      document.getElementById('tab-header').classList.add('hidden');
+      switchTab('profile');
+
+      const profile = authData.profile;
+      document.getElementById('user-display-name').innerText = `@${profile.username}`;
+      document.getElementById('user-lol-id').innerText = `${profile.game_name} #${profile.tag_line}`;
+
+      // Cargar datos en vivo de LoL para el perfil
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/player/${encodeURIComponent(profile.game_name)}/${encodeURIComponent(profile.tag_line)}`);
+        const lolData = await res.json();
+        if (res.ok) {
+          document.getElementById('user-icon').src = `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/${lolData.profileIconId}.png`;
+          const statusBadge = document.getElementById('user-game-status');
+          if (lolData.inGame) {
+            statusBadge.className = 'status-badge status-ingame';
+            statusBadge.innerText = '🎮 Jugando una partida';
+          } else {
+            statusBadge.className = 'status-badge status-offline';
+            statusBadge.innerText = 'Fuera de partida';
+          }
+        }
+      } catch (e) {
+        console.log('Error cargando estado de LoL en perfil');
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('sebisx_session');
+      document.getElementById('tab-header').classList.remove('hidden');
+      switchTab('login');
+    }
+
+    // Verificar si hay sesión guardada al abrir la página
+    window.onload = () => {
+      const savedSession = localStorage.getItem('sebisx_session');
+      if (savedSession) {
+        loadUserProfile(JSON.parse(savedSession));
+      }
+    };
+  </script>
 </body>
 </html>
