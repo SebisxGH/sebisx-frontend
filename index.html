@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEBISX.COM - Red Social LoL</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0f1923; color: #ece8e1; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        
+        header { text-align: center; margin-bottom: 30px; margin-top: 20px; }
+        header h1 { color: #ff4655; font-size: 2.8rem; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,70,85,0.4); }
+        header p { color: #8b978f; margin-top: 5px; }
+
+        .container { width: 100%; max-width: 500px; }
+
+        .card { background: #1f2b3e; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); margin-bottom: 20px; }
+        
+        .input-group { display: flex; gap: 10px; margin-top: 10px; }
+        input, textarea { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #364966; background: #0f1923; color: #fff; font-size: 1rem; }
+        textarea { resize: none; height: 80px; width: 100%; margin-bottom: 10px; }
+        
+        button { padding: 12px 20px; background: #ff4655; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #e03e4d; }
+        .btn-full { width: 100%; }
+
+        .profile-card { display: none; border-left: 5px solid #8b978f; }
+        .profile-card.online { border-left-color: #00e676; }
+        .profile-card.ingame { border-left-color: #ff4655; }
+
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; margin-bottom: 10px; }
+        .badge-offline { background: rgba(139, 151, 143, 0.2); color: #8b978f; }
+        .badge-ingame { background: rgba(255, 70, 85, 0.2); color: #ff4655; animation: pulse 1.5s infinite; }
+
+        .social-links { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-social { text-decoration: none; padding: 8px 15px; border-radius: 6px; font-size: 0.9rem; font-weight: bold; color: white; flex: 1; text-align: center; }
+        .btn-discord { background: #5865F2; }
+        .btn-twitch { background: #9146FF; }
+
+        .feed-header { border-bottom: 2px solid #ff4655; padding-bottom: 10px; margin-bottom: 15px; margin-top: 30px; }
+        .post { background: #1f2b3e; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 3px solid #ff4655; }
+        .post-author { color: #00e676; font-weight: bold; margin-bottom: 5px; }
+        .post-time { color: #8b978f; font-size: 0.8rem; margin-top: 10px; display: block; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>SEBISX.COM</h1>
+        <p>Comunidad y Estado en Tiempo Real</p>
+    </header>
+
+    <div class="container">
+        <!-- BUSCADOR -->
+        <div class="card">
+            <h3 style="color: #fff;">Radar de Invocadores</h3>
+            <div class="input-group">
+                <input type="text" id="gameName" placeholder="Nombre (ej: Faker)">
+                <input type="text" id="tagLine" placeholder="Tag (ej: KR1)" style="max-width: 100px;">
+                <button onclick="buscarJugador()">Buscar</button>
+            </div>
+        </div>
+
+        <!-- TARJETA DE PERFIL OCULTA HASTA BUSCAR -->
+        <div id="profileCard" class="card profile-card">
+            <span id="statusBadge" class="status-badge badge-offline">Desconectado</span>
+            <h2 id="playerName" style="color: #fff;">Nombre#Tag</h2>
+            <p id="gameDetails" style="margin-top: 8px; color: #8b978f;"></p>
+            <div class="social-links">
+                <a href="#" class="btn-social btn-discord">Unirse a Discord</a>
+                <a href="#" class="btn-social btn-twitch">Ver Stream</a>
+            </div>
+        </div>
+
+        <h3 class="feed-header" style="color: #fff;">Muro de la Comunidad</h3>
+
+        <!-- CAJA PARA CREAR PUBLICACIÓN -->
+        <div class="card">
+            <textarea id="postContent" placeholder="¿Buscas dúo? ¿Qué jugada hiciste hoy? Escribe algo..."></textarea>
+            <button class="btn-full" onclick="publicarMensaje()">Publicar</button>
+        </div>
+
+        <!-- AQUÍ APARECERÁN LOS POSTS -->
+        <div id="postsContainer">
+            <!-- Post de Ejemplo -->
+            <div class="post">
+                <div class="post-author">Sebisx (Admin)</div>
+                <p>¡Bienvenidos a la versión de prueba de SEBISX.COM! Empiecen a buscar a sus amigos para ver si están en partida. 🎮🔥</p>
+                <span class="post-time">Hace 5 minutos</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función para consultar la API de Riot
+        async function buscarJugador() {
+            const name = document.getElementById('gameName').value.trim();
+            const tag = document.getElementById('tagLine').value.trim();
+            const card = document.getElementById('profileCard');
+
+            if (!name || !tag) {
+                alert("Por favor ingresa Nombre y Tag.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/player/${encodeURIComponent(name)}/${encodeURIComponent(tag)}`);
+                const data = await response.json();
+
+                if (!data.success) {
+                    alert("Error: " + (data.message || "Jugador no encontrado"));
+                    return;
+                }
+
+                const player = data.player;
+                document.getElementById('playerName').innerText = `${player.gameName}#${player.tagLine}`;
+
+                const badge = document.getElementById('statusBadge');
+                const details = document.getElementById('gameDetails');
+
+                if (player.isPlaying) {
+                    card.className = "card profile-card ingame";
+                    badge.className = "status-badge badge-ingame";
+                    badge.innerText = "🔴 EN PARTIDA";
+                    const mins = Math.floor(player.gameInfo.gameLength / 60);
+                    details.innerText = `Modo de juego: ${player.gameInfo.gameMode} - Tiempo: ~${mins} min`;
+                } else {
+                    card.className = "card profile-card online";
+                    badge.className = "status-badge badge-offline";
+                    badge.innerText = "🟢 DISPONIBLE";
+                    details.innerText = "No está en partida activa en este momento.";
+                }
+
+                card.style.display = "block";
+
+            } catch (error) {
+                alert("Asegúrate de que tu servidor backend (node server.js) esté encendido.");
+            }
+        }
+
+        // Función para agregar publicaciones al muro
+        function publicarMensaje() {
+            const content = document.getElementById('postContent').value.trim();
+            if (!content) return; // Si está vacío no hace nada
+
+            const container = document.getElementById('postsContainer');
+            
+            const nuevoPost = `
+                <div class="post">
+                    <div class="post-author">Invocador Anónimo</div>
+                    <p>${content}</p>
+                    <span class="post-time">Justo ahora</span>
+                </div>
+            `;
+
+            // Agrega el post nuevo arriba de los viejos
+            container.innerHTML = nuevoPost + container.innerHTML;
+            
+            // Limpia la caja de texto
+            document.getElementById('postContent').value = '';
+        }
+    </script>
+</body>
+</html>
