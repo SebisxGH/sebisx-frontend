@@ -81,6 +81,7 @@
       border-top-left-radius: 12px;
       border-top-right-radius: 12px;
       overflow: hidden; 
+      display: block;
     }
 
     .banner-img { 
@@ -168,7 +169,7 @@
     </div>
     <div class="nav-right">
       <div class="user-pill" onclick="toggleAuthModal()">
-        <img id="nav-avatar" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" />
+        <img id="nav-avatar" src="https://ddragon.leagueoflegends.com/cdn/26.16.1/img/profileicon/29.png" />
         <span id="nav-username" style="font-size:0.85rem; font-weight:bold;">Iniciar Sesión</span>
       </div>
       <button id="btn-logout" class="action-btn hidden" onclick="handleLogout()" style="color:#ef4444;"><i class="fa-solid fa-right-from-bracket"></i></button>
@@ -199,7 +200,7 @@
         </div>
         <div class="hero-info">
           <div class="hero-avatar-box">
-            <img id="profile-avatar" class="hero-avatar" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" />
+            <img id="profile-avatar" class="hero-avatar" src="https://ddragon.leagueoflegends.com/cdn/26.16.1/img/profileicon/29.png" />
             <div class="hero-details">
               <h2 id="profile-title">Comunidad SEBISX <i class="fa-solid fa-circle-check" style="color:var(--accent); font-size:1rem;"></i></h2>
               <p id="profile-subtitle">Inicia sesión para vincular tu cuenta de LoL</p>
@@ -211,7 +212,7 @@
       <!-- Post Composer -->
       <section class="post-composer">
         <div class="composer-input">
-          <img id="composer-avatar" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" />
+          <img id="composer-avatar" src="https://ddragon.leagueoflegends.com/cdn/26.16.1/img/profileicon/29.png" />
           <input type="text" id="post-input-text" placeholder="¿Qué estás pensando, invocador?" />
         </div>
         <div class="composer-actions">
@@ -224,7 +225,7 @@
       <div id="posts-feed" style="display:flex; flex-direction:column; gap:20px;">
         <article class="post-card">
           <div class="post-header">
-            <img src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/548.png" />
+            <img src="https://ddragon.leagueoflegends.com/cdn/26.16.1/img/profileicon/548.png" />
             <div>
               <div class="post-author">Comunidad LoL <i class="fa-solid fa-circle-check" style="color:var(--accent); font-size:0.8rem;"></i></div>
               <div class="post-time">Hace unos momentos</div>
@@ -283,7 +284,7 @@
     </div>
   </div>
 
-<!-- Modal Banner -->
+  <!-- Modal Banner -->
   <div class="modal" id="modal-banner">
     <div class="modal-content">
       <i class="fa-solid fa-xmark close-modal" onclick="closeBannerModal()"></i>
@@ -390,38 +391,85 @@
         if (res.ok) {
           if (msg) { msg.style.color = '#22c55e'; msg.innerText = '¡Registro exitoso! Iniciando sesión...'; }
           
-          // --- LOGICA DE FIX: Auto-Login automático ---
-          // Esperamos un segundo para asegurar que Supabase Auth y Profiles estén sincronizados
           await new Promise(r => setTimeout(r, 1200)); 
 
-          // Intentamos iniciar sesión automáticamente con las credenciales que acabamos de crear
           const loginRes = await fetch(`${API_URL}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }) // Usamos el mismo email y pass del registro
+            body: JSON.stringify({ email, password })
           });
           const loginData = await loginRes.json();
 
           if (loginRes.ok) {
-            // Guardamos la sesión real y completa del Login
             localStorage.setItem('sebisx_session', JSON.stringify(loginData));
-            loadUserSession(); // Cargamos la sesión real en la UI
-            closeAuthModal(); // Cerramos el modal
+            loadUserSession();
+            closeAuthModal();
             if (msg) msg.innerText = '';
           } else {
-            // Si el auto-login falla (raro), lo mandamos al tab de Login manual
             alert('Cuenta creada. Por favor inicia sesión manualmente.');
             switchAuthTab('login');
           }
         } else {
-          if (msg) { msg.style.color = '#ef4444'; msg.innerText = data.error || 'Error al registrarse (ej. email ya usado).'; }
+          if (msg) { msg.style.color = '#ef4444'; msg.innerText = data.error || 'Error al registrarse.'; }
         }
       } catch (err) {
         if (msg) { msg.style.color = '#ef4444'; msg.innerText = 'Error de conexión con el servidor.'; }
       }
     }
 
-   function loadUserSession() {
+    async function saveBannerUrl() {
+      const bannerUrlInput = document.getElementById('input-banner-url');
+      const bannerUrl = bannerUrlInput.value.trim();
+      const msg = document.getElementById('banner-msg');
+      const bannerImg = document.getElementById('profile-banner');
+
+      if (!bannerUrl) {
+        if (msg) { msg.style.color = '#eab308'; msg.innerText = 'Por favor ingresa una URL.'; }
+        return;
+      }
+
+      if (!currentUser) {
+        alert('Debes iniciar sesión.');
+        closeBannerModal();
+        return;
+      }
+
+      const userId = currentUser.user?.id || currentUser.profile?.id || currentUser.id;
+
+      if (msg) { msg.style.color = '#38bdf8'; msg.innerText = 'Guardando en la base de datos...'; }
+
+      try {
+        const res = await fetch(`${API_URL}/profile/update-banner`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: userId, bannerUrl: bannerUrl })
+        });
+
+        if (res.ok) {
+          if (bannerImg) bannerImg.src = bannerUrl;
+
+          if (currentUser.profile) {
+            currentUser.profile.banner_url = bannerUrl;
+          } else {
+            currentUser.banner_url = bannerUrl;
+          }
+          localStorage.setItem('sebisx_session', JSON.stringify(currentUser));
+
+          if (msg) { msg.style.color = '#22c55e'; msg.innerText = '¡Portada guardada con éxito!'; }
+          bannerUrlInput.value = '';
+          setTimeout(() => { closeBannerModal(); if (msg) msg.innerText = ''; }, 1000);
+        } else {
+          const errorData = await res.json();
+          console.error("Error del servidor:", errorData);
+          if (msg) { msg.style.color = '#ef4444'; msg.innerText = 'No se pudo guardar en la base de datos.'; }
+        }
+      } catch (err) {
+        console.error("Error de conexión:", err);
+        if (msg) { msg.style.color = '#ef4444'; msg.innerText = 'Error de conexión con el servidor.'; }
+      }
+    }
+
+    function loadUserSession() {
       const savedSession = localStorage.getItem('sebisx_session');
       if (savedSession) {
         currentUser = JSON.parse(savedSession);
@@ -438,13 +486,11 @@
 
         document.getElementById('btn-logout').classList.remove('hidden');
 
-        // LEER PORTADA GUARDADA AL RECARGAR CON F5
         if (profile.banner_url) {
           const bannerImg = document.getElementById('profile-banner');
           if (bannerImg) bannerImg.src = profile.banner_url;
         }
 
-        // Cargar ícono de invocador si están los datos de LoL
         if (profile.game_name && profile.tag_line) {
           fetch(`${API_URL}/player/${encodeURIComponent(profile.game_name)}/${encodeURIComponent(profile.tag_line)}`)
             .then(res => res.json())
@@ -473,7 +519,7 @@
       }
 
       const feed = document.getElementById('posts-feed');
-      const profile = currentUser.profile;
+      const profile = currentUser.profile || currentUser;
       const userAvatar = document.getElementById('nav-avatar').src;
 
       const postHTML = `
@@ -491,35 +537,6 @@
 
       feed.insertAdjacentHTML('afterbegin', postHTML);
       input.value = '';
-    }
-
-    function loadUserSession() {
-      const savedSession = localStorage.getItem('sebisx_session');
-      if (savedSession) {
-        currentUser = JSON.parse(savedSession);
-        const profile = currentUser.profile;
-
-        document.getElementById('nav-username').innerText = `@${profile.username}`;
-        document.getElementById('profile-title').innerText = `@${profile.username}`;
-        document.getElementById('profile-subtitle').innerText = `Invocador: ${profile.game_name} #${profile.tag_line}`;
-        document.getElementById('btn-logout').classList.remove('hidden');
-
-        if (profile.banner_url) {
-          document.getElementById('profile-banner').src = profile.banner_url;
-        }
-
-        fetch(`${API_URL}/player/${encodeURIComponent(profile.game_name)}/${encodeURIComponent(profile.tag_line)}`)
-          .then(res => res.json())
-          .then(lolData => {
-            if (lolData.profileIconId) {
-              const iconUrl = `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/${lolData.profileIconId}.png`;
-              document.getElementById('nav-avatar').src = iconUrl;
-              document.getElementById('profile-avatar').src = iconUrl;
-              document.getElementById('composer-avatar').src = iconUrl;
-            }
-          })
-          .catch(() => console.log('Uso de ícono estándar'));
-      }
     }
 
     function handleLogout() {
