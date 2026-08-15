@@ -421,48 +421,43 @@
       }
     }
 
-    async function saveBannerUrl() {
-      const bannerUrl = document.getElementById('input-banner-url').value.trim();
-      const msg = document.getElementById('banner-msg');
+   function loadUserSession() {
+      const savedSession = localStorage.getItem('sebisx_session');
+      if (savedSession) {
+        currentUser = JSON.parse(savedSession);
+        const profile = currentUser.profile || currentUser;
 
-      if (!bannerUrl) {
-        if (msg) { msg.style.color = '#ef4444'; msg.innerText = 'Por favor ingresa una URL válida.'; }
-        return;
-      }
-
-      if (!currentUser) {
-        alert('Debes iniciar sesión para cambiar la portada.');
-        closeBannerModal();
-        toggleAuthModal();
-        return;
-      }
-
-      // 1. Cambiar la imagen visualmente en la pantalla de inmediato
-      const bannerImg = document.getElementById('profile-banner');
-      if (bannerImg) bannerImg.src = bannerUrl;
-
-      // 2. Intentar guardar en la base de datos (Backend)
-      if (msg) { msg.style.color = '#38bdf8'; msg.innerText = 'Guardando portada...'; }
-
-      try {
-        const res = await fetch(`${API_URL}/profile/update-banner`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: currentUser.user?.id || currentUser.profile?.id, bannerUrl })
-        });
-
-        if (res.ok) {
-          // Actualizar sesión local para que persista al recargar la página
-          if (currentUser.profile) currentUser.profile.banner_url = bannerUrl;
-          localStorage.setItem('sebisx_session', JSON.stringify(currentUser));
-
-          if (msg) { msg.style.color = '#22c55e'; msg.innerText = '¡Portada actualizada!'; }
-          setTimeout(() => { closeBannerModal(); if (msg) msg.innerText = ''; }, 1200);
-        } else {
-          if (msg) { msg.style.color = '#eab308'; msg.innerText = 'Cargada visualmente (no se pudo guardar en BD).'; }
+        if (profile.username) {
+          document.getElementById('nav-username').innerText = `@${profile.username}`;
+          document.getElementById('profile-title').innerText = `@${profile.username}`;
         }
-      } catch (err) {
-        if (msg) { msg.style.color = '#eab308'; msg.innerText = 'Cargada visualmente (backend no disponible).'; }
+        
+        if (profile.game_name) {
+          document.getElementById('profile-subtitle').innerText = `Invocador: ${profile.game_name} #${profile.tag_line || ''}`;
+        }
+
+        document.getElementById('btn-logout').classList.remove('hidden');
+
+        // LEER PORTADA GUARDADA AL RECARGAR CON F5
+        if (profile.banner_url) {
+          const bannerImg = document.getElementById('profile-banner');
+          if (bannerImg) bannerImg.src = profile.banner_url;
+        }
+
+        // Cargar ícono de invocador si están los datos de LoL
+        if (profile.game_name && profile.tag_line) {
+          fetch(`${API_URL}/player/${encodeURIComponent(profile.game_name)}/${encodeURIComponent(profile.tag_line)}`)
+            .then(res => res.json())
+            .then(lolData => {
+              if (lolData.profileIconId) {
+                const iconUrl = `https://ddragon.leagueoflegends.com/cdn/26.16.1/img/profileicon/${lolData.profileIconId}.png`;
+                document.getElementById('nav-avatar').src = iconUrl;
+                document.getElementById('profile-avatar').src = iconUrl;
+                document.getElementById('composer-avatar').src = iconUrl;
+              }
+            })
+            .catch(() => console.log('Usando ícono estándar de perfil'));
+        }
       }
     }
 
