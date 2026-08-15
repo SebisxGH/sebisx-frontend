@@ -66,7 +66,7 @@
     /* Feed Central */
     .feed-container { display: flex; flex-direction: column; gap: 20px; }
 
-    /* Profile Banner Header (SIN OVERFLOW HIDDEN PARA NO CORTAR LA FOTO) */
+    /* Profile Banner Header */
     .profile-hero { 
       background: var(--card-bg); 
       border: 1px solid var(--card-border); 
@@ -169,7 +169,7 @@
     </div>
     <div class="nav-right">
       <div class="user-pill" onclick="toggleAuthModal()">
-        <img id="nav-avatar" src="https://ddragon.leagueoflegends.com/cdn/26.16.1/img/profileicon/29.png" />
+        <img id="nav-avatar" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" onerror="this.src='https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png'" />
         <span id="nav-username" style="font-size:0.85rem; font-weight:bold;">Iniciar Sesión</span>
       </div>
       <button id="btn-logout" class="action-btn hidden" onclick="handleLogout()" style="color:#ef4444;"><i class="fa-solid fa-right-from-bracket"></i></button>
@@ -200,7 +200,7 @@
         </div>
         <div class="hero-info">
           <div class="hero-avatar-box">
-            <img id="profile-avatar" class="hero-avatar" src="https://ddragon.leagueoflegends.com/cdn/26.16.1/img/profileicon/29.png" />
+            <img id="profile-avatar" class="hero-avatar" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" onerror="this.src='https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png'" />
             <div class="hero-details">
               <h2 id="profile-title">Comunidad SEBISX <i class="fa-solid fa-circle-check" style="color:var(--accent); font-size:1rem;"></i></h2>
               <p id="profile-subtitle">Inicia sesión para vincular tu cuenta de LoL</p>
@@ -212,7 +212,7 @@
       <!-- Post Composer -->
       <section class="post-composer">
         <div class="composer-input">
-          <img id="composer-avatar" src="https://ddragon.leagueoflegends.com/cdn/26.16.1/img/profileicon/29.png" />
+          <img id="composer-avatar" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" onerror="this.src='https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png'" />
           <input type="text" id="post-input-text" placeholder="¿Qué estás pensando, invocador?" />
         </div>
         <div class="composer-actions">
@@ -225,7 +225,7 @@
       <div id="posts-feed" style="display:flex; flex-direction:column; gap:20px;">
         <article class="post-card">
           <div class="post-header">
-            <img src="https://ddragon.leagueoflegends.com/cdn/26.16.1/img/profileicon/548.png" />
+            <img src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/548.png" onerror="this.src='https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png'" />
             <div>
               <div class="post-author">Comunidad LoL <i class="fa-solid fa-circle-check" style="color:var(--accent); font-size:0.8rem;"></i></div>
               <div class="post-time">Hace unos momentos</div>
@@ -495,8 +495,9 @@
           fetch(`${API_URL}/player/${encodeURIComponent(profile.game_name)}/${encodeURIComponent(profile.tag_line)}`)
             .then(res => res.json())
             .then(lolData => {
-              if (lolData.profileIconId) {
-                const iconUrl = `https://ddragon.leagueoflegends.com/cdn/26.16.1/img/profileicon/${lolData.profileIconId}.png`;
+              if (lolData && lolData.profileIconId) {
+                // FIX DE CDN: Usamos una versión estable de DataDragon
+                const iconUrl = `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/${lolData.profileIconId}.png`;
                 document.getElementById('nav-avatar').src = iconUrl;
                 document.getElementById('profile-avatar').src = iconUrl;
                 document.getElementById('composer-avatar').src = iconUrl;
@@ -525,7 +526,7 @@
       const postHTML = `
         <article class="post-card">
           <div class="post-header">
-            <img src="${userAvatar}" />
+            <img src="${userAvatar}" onerror="this.src='https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png'" />
             <div>
               <div class="post-author">@${profile.username}</div>
               <div class="post-time">Justo ahora</div>
