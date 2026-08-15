@@ -372,8 +372,12 @@
       const tagLine = document.getElementById('reg-tagline').value.trim();
       const msg = document.getElementById('reg-msg');
 
-      msg.style.color = '#38bdf8';
-      msg.innerText = 'Creando cuenta...';
+      if (!username || !email || !password || !gameName || !tagLine) {
+        if (msg) { msg.style.color = '#eab308'; msg.innerText = 'Por favor rellena todos los campos.'; }
+        return;
+      }
+
+      if (msg) { msg.style.color = '#38bdf8'; msg.innerText = 'Creando cuenta...'; }
 
       try {
         const res = await fetch(`${API_URL}/auth/register`, {
@@ -384,15 +388,36 @@
         const data = await res.json();
 
         if (res.ok) {
-          alert('¡Registro exitoso! Ya puedes iniciar sesión.');
-          switchAuthTab('login');
+          if (msg) { msg.style.color = '#22c55e'; msg.innerText = '¡Registro exitoso! Iniciando sesión...'; }
+          
+          // --- LOGICA DE FIX: Auto-Login automático ---
+          // Esperamos un segundo para asegurar que Supabase Auth y Profiles estén sincronizados
+          await new Promise(r => setTimeout(r, 1200)); 
+
+          // Intentamos iniciar sesión automáticamente con las credenciales que acabamos de crear
+          const loginRes = await fetch(`${API_URL}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }) // Usamos el mismo email y pass del registro
+          });
+          const loginData = await loginRes.json();
+
+          if (loginRes.ok) {
+            // Guardamos la sesión real y completa del Login
+            localStorage.setItem('sebisx_session', JSON.stringify(loginData));
+            loadUserSession(); // Cargamos la sesión real en la UI
+            closeAuthModal(); // Cerramos el modal
+            if (msg) msg.innerText = '';
+          } else {
+            // Si el auto-login falla (raro), lo mandamos al tab de Login manual
+            alert('Cuenta creada. Por favor inicia sesión manualmente.');
+            switchAuthTab('login');
+          }
         } else {
-          msg.style.color = '#ef4444';
-          msg.innerText = data.error || 'Error al registrarse';
+          if (msg) { msg.style.color = '#ef4444'; msg.innerText = data.error || 'Error al registrarse (ej. email ya usado).'; }
         }
       } catch (err) {
-        msg.style.color = '#ef4444';
-        msg.innerText = 'Error de conexión.';
+        if (msg) { msg.style.color = '#ef4444'; msg.innerText = 'Error de conexión con el servidor.'; }
       }
     }
 
