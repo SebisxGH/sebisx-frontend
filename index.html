@@ -391,22 +391,46 @@
 
     async function saveBannerUrl() {
       const bannerUrl = document.getElementById('input-banner-url').value.trim();
-      if (!bannerUrl || !currentUser) return;
+      const msg = document.getElementById('banner-msg');
+
+      if (!bannerUrl) {
+        if (msg) { msg.style.color = '#ef4444'; msg.innerText = 'Por favor ingresa una URL válida.'; }
+        return;
+      }
+
+      if (!currentUser) {
+        alert('Debes iniciar sesión para cambiar la portada.');
+        closeBannerModal();
+        toggleAuthModal();
+        return;
+      }
+
+      // 1. Cambiar la imagen visualmente en la pantalla de inmediato
+      const bannerImg = document.getElementById('profile-banner');
+      if (bannerImg) bannerImg.src = bannerUrl;
+
+      // 2. Intentar guardar en la base de datos (Backend)
+      if (msg) { msg.style.color = '#38bdf8'; msg.innerText = 'Guardando portada...'; }
 
       try {
         const res = await fetch(`${API_URL}/profile/update-banner`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: currentUser.user.id, bannerUrl })
+          body: JSON.stringify({ userId: currentUser.user?.id || currentUser.profile?.id, bannerUrl })
         });
+
         if (res.ok) {
-          document.getElementById('profile-banner').src = bannerUrl;
-          closeBannerModal();
+          // Actualizar sesión local para que persista al recargar la página
+          if (currentUser.profile) currentUser.profile.banner_url = bannerUrl;
+          localStorage.setItem('sebisx_session', JSON.stringify(currentUser));
+
+          if (msg) { msg.style.color = '#22c55e'; msg.innerText = '¡Portada actualizada!'; }
+          setTimeout(() => { closeBannerModal(); if (msg) msg.innerText = ''; }, 1200);
         } else {
-          alert('Error actualizando la portada.');
+          if (msg) { msg.style.color = '#eab308'; msg.innerText = 'Cargada visualmente (no se pudo guardar en BD).'; }
         }
       } catch (err) {
-        alert('Error de conexión.');
+        if (msg) { msg.style.color = '#eab308'; msg.innerText = 'Cargada visualmente (backend no disponible).'; }
       }
     }
 
