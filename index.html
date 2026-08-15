@@ -276,14 +276,15 @@
     </div>
   </div>
 
-  <!-- Modal Banner -->
+<!-- Modal Banner -->
   <div class="modal" id="modal-banner">
     <div class="modal-content">
       <i class="fa-solid fa-xmark close-modal" onclick="closeBannerModal()"></i>
       <h3>Cambiar Imagen de Portada</h3>
-      <p style="font-size:0.85rem; color:var(--text-sub); margin-top:5px;">Pega el enlace/URL directa de la imagen:</p>
+      <p style="font-size:0.85rem; color:var(--text-sub); margin-top:5px;">Pega la URL directa de una imagen (JPG/PNG):</p>
       <input type="text" id="input-banner-url" class="form-control" placeholder="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aatrox_0.jpg" />
       <button class="btn-block" onclick="saveBannerUrl()">Guardar Portada</button>
+      <p id="banner-msg" style="margin-top: 10px; font-size: 0.85rem; text-align: center;"></p>
     </div>
   </div>
 
