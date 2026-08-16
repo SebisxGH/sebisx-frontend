@@ -132,7 +132,25 @@
 
     /* Right Sidebar Widgets */
     .widget-box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
-    .widget-title { font-size: 0.9rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-sub); margin-bottom: 12px; }
+    .widget-title { font-size: 0.9rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-sub); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+
+    /* Widget de Historial de Partidas */
+    .match-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      background: #0b0f19;
+      border-left: 4px solid var(--card-border);
+    }
+    .match-card.win { border-left-color: #22c55e; background: rgba(34, 197, 94, 0.05); }
+    .match-card.loss { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
+    .match-champion-img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+    .match-info { display: flex; flex-direction: column; }
+    .match-result { font-size: 0.85rem; font-weight: bold; }
+    .match-kda { font-size: 0.8rem; color: var(--text-sub); }
 
     /* Modals System */
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
@@ -242,6 +260,15 @@
 
     <!-- Right Sidebar -->
     <aside class="sidebar-right">
+      
+      <!-- Widget de Historial de Partidas -->
+      <div class="widget-box">
+        <div class="widget-title"><i class="fa-solid fa-trophy" style="color: var(--accent);"></i> Últimas Partidas</div>
+        <div id="matches-container">
+          <p style="font-size:0.85rem; color:var(--text-sub);">Inicia sesión para ver tu historial de partidas.</p>
+        </div>
+      </div>
+
       <div class="widget-box">
         <div class="widget-title">Acerca de</div>
         <p style="font-size:0.85rem; color:var(--text-sub); line-height:1.4;">Red social para jugadores de League of Legends. Sube de elo y comparte tus publicaciones en el muro.</p>
@@ -469,6 +496,54 @@
       }
     }
 
+    async function loadMatchHistory(gameName, tagLine) {
+      const container = document.getElementById('matches-container');
+      if (!container) return;
+
+      container.innerHTML = '<p style="font-size:0.85rem; color:var(--text-sub);">Cargando partidas...</p>';
+
+      try {
+        const res = await fetch(`${API_URL}/matches/${encodeURIComponent(gameName)}/${encodeURIComponent(tagLine)}`);
+        const matches = await res.json();
+
+        if (!res.ok || !Array.isArray(matches) || matches.length === 0) {
+          container.innerHTML = '<p style="font-size:0.85rem; color:var(--text-sub);">No se encontraron partidas recientes.</p>';
+          return;
+        }
+
+        container.innerHTML = ''; // Limpiar loader
+
+        matches.forEach(match => {
+          const isWin = match.win;
+          const statusClass = isWin ? 'win' : 'loss';
+          const statusText = isWin ? 'Victoria' : 'Derrota';
+          const statusColor = isWin ? '#22c55e' : '#ef4444';
+          const champIconUrl = `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${match.championName}.png`;
+
+          const matchHTML = `
+            <div class="match-card ${statusClass}">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <img class="match-champion-img" src="${champIconUrl}" onerror="this.src='https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png'" />
+                <div class="match-info">
+                  <span class="match-result" style="color: ${statusColor}">${statusText}</span>
+                  <span style="font-size:0.75rem; color:var(--text-sub);">${match.championName}</span>
+                </div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:0.85rem; font-weight:bold;">${match.kills}/${match.deaths}/${match.assists}</div>
+                <div class="match-kda">KDA: ${match.kda}</div>
+              </div>
+            </div>
+          `;
+          container.insertAdjacentHTML('beforeend', matchHTML);
+        });
+
+      } catch (err) {
+        console.error('Error al cargar el historial:', err);
+        container.innerHTML = '<p style="font-size:0.85rem; color:#ef4444;">Error al cargar partidas.</p>';
+      }
+    }
+
     function loadUserSession() {
       const savedSession = localStorage.getItem('sebisx_session');
       if (savedSession) {
@@ -492,11 +567,11 @@
         }
 
         if (profile.game_name && profile.tag_line) {
+          // 1. Cargar datos e icono de perfil
           fetch(`${API_URL}/player/${encodeURIComponent(profile.game_name)}/${encodeURIComponent(profile.tag_line)}`)
             .then(res => res.json())
             .then(lolData => {
               if (lolData && lolData.profileIconId) {
-                // FIX DE CDN: Usamos una versión estable de DataDragon
                 const iconUrl = `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/${lolData.profileIconId}.png`;
                 document.getElementById('nav-avatar').src = iconUrl;
                 document.getElementById('profile-avatar').src = iconUrl;
@@ -504,6 +579,9 @@
               }
             })
             .catch(() => console.log('Usando ícono estándar de perfil'));
+
+          // 2. Cargar historial de partidas recientes
+          loadMatchHistory(profile.game_name, profile.tag_line);
         }
       }
     }
