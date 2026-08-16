@@ -21,9 +21,7 @@
 
     .hidden { display: none !important; }
 
-    /* =========================================================
-       PANTALLA DE INICIO DE SESIÓN / LANDING (FULLSCREEN)
-       ========================================================= */
+    /* LANDING SCREEN */
     #landing-screen {
       position: fixed;
       inset: 0;
@@ -48,32 +46,19 @@
       text-align: center;
     }
 
-    .landing-brand {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--accent);
-      margin-bottom: 8px;
-      letter-spacing: 1px;
-    }
-
-    .landing-subtitle {
-      font-size: 0.9rem;
-      color: var(--text-sub);
-      margin-bottom: 25px;
-    }
+    .landing-brand { font-size: 2rem; font-weight: 800; color: var(--accent); margin-bottom: 8px; letter-spacing: 1px; }
+    .landing-subtitle { font-size: 0.9rem; color: var(--text-sub); margin-bottom: 25px; }
 
     .auth-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--card-border); padding-bottom: 10px; }
     .auth-tab-btn { flex: 1; padding: 10px; background: transparent; border: none; color: var(--text-sub); font-weight: bold; cursor: pointer; border-radius: 6px; }
     .auth-tab-btn.active { background: var(--accent); color: var(--bg-dark); }
 
-    input.form-control { width: 100%; padding: 12px; background: #0b0f19; border: 1px solid var(--card-border); border-radius: 8px; color: white; margin-top: 10px; box-sizing: border-box; outline: none; }
+    input.form-control { width: 100%; padding: 12px; background: #0b0f19; border: 1px solid var(--card-border); border-radius: 8px; color: white; margin-top: 10px; outline: none; }
     input.form-control:focus { border-color: var(--accent); }
     .btn-block { width: 100%; margin-top: 18px; padding: 12px; background: var(--accent); color: var(--bg-dark); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
     .btn-block:hover { background: var(--accent-hover); }
 
-    /* =========================================================
-       ESTILOS DEL DASHBOARD PRINCIPAL
-       ========================================================= */
+    /* DASHBOARD */
     header.navbar {
       height: 60px;
       background: var(--card-bg);
@@ -156,7 +141,6 @@
       align-items: center;
       gap: 8px;
     }
-    .btn-edit-banner:hover { background: rgba(255, 255, 255, 0.15); }
 
     .hero-content-overlay {
       position: absolute;
@@ -199,49 +183,69 @@
     }
 
     .user-tagline { color: #a855f7; font-weight: 700; }
-    .user-glow-line { height: 2px; width: 100%; max-width: 300px; background: linear-gradient(90deg, #a855f7 0%, rgba(168, 85, 247, 0) 100%); border-radius: 2px; box-shadow: 0 0 8px #a855f7; }
+    .user-glow-line { height: 2px; width: 100%; max-width: 300px; background: linear-gradient(90deg, #a855f7 0%, rgba(168, 85, 247, 0) 100%); border-radius: 2px; }
 
+    /* CONTENEDOR Y TARJETAS DE RANGOS */
     #ranks-container { display: flex; gap: 12px; align-items: center; }
 
     .rank-card-box {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 10px 18px;
-      background: rgba(15, 23, 42, 0.65);
+      padding: 10px 16px;
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(10px);
-      border-radius: 10px;
-      min-width: 155px;
+      border-radius: 12px;
+      min-width: 160px;
     }
 
-    .rank-card-box.soloq { border: 1px solid rgba(168, 85, 247, 0.35); }
-    .rank-card-box.flex { border: 1px solid rgba(56, 189, 248, 0.35); }
+    .rank-card-box.soloq { border: 1px solid rgba(168, 85, 247, 0.5); box-shadow: 0 0 15px rgba(168, 85, 247, 0.15); }
+    .rank-card-box.flex { border: 1px solid rgba(56, 189, 248, 0.5); box-shadow: 0 0 15px rgba(56, 189, 248, 0.15); }
 
-    .rank-card-box .rank-queue { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.5px; display: block; }
-    .rank-card-box.soloq .rank-queue { color: #c084fc; }
-    .rank-card-box.flex .rank-queue { color: #38bdf8; }
-    .rank-card-box .rank-tier-text { font-size: 0.85rem; font-weight: 800; color: #ffffff; text-transform: uppercase; }
-    .rank-icon-img { width: 36px; height: 36px; object-fit: contain; }
+    .rank-icon-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      background: #0b0f19;
+      flex-shrink: 0;
+    }
 
-    /* Post Composer */
+    .rank-queue-title { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.5px; display: block; }
+    .rank-card-box.soloq .rank-queue-title { color: #c084fc; }
+    .rank-card-box.flex .rank-queue-title { color: #38bdf8; }
+
+    .rank-tier-text { font-size: 0.9rem; font-weight: 800; color: #ffffff; text-transform: uppercase; }
+    .rank-lp-text { font-size: 0.75rem; color: var(--text-sub); display: block; }
+
+    /* COLORES POR LIGA */
+    .tier-gold { color: #f59e0b; border: 1px solid #f59e0b; }
+    .tier-platinum { color: #2dd4bf; border: 1px solid #2dd4bf; }
+    .tier-emerald { color: #10b981; border: 1px solid #10b981; }
+    .tier-diamond { color: #38bdf8; border: 1px solid #38bdf8; }
+    .tier-master { color: #c084fc; border: 1px solid #c084fc; }
+    .tier-grandmaster { color: #ef4444; border: 1px solid #ef4444; }
+    .tier-challenger { color: #facc15; border: 1px solid #facc15; }
+    .tier-unranked { color: #64748b; border: 1px solid #64748b; }
+
+    /* POST COMPOSER & CARDS */
     .post-composer { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; }
     .composer-input { display: flex; align-items: center; gap: 12px; }
     .composer-input img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
     .composer-input input { width: 100%; background: #0b0f19; border: 1px solid var(--card-border); padding: 12px; border-radius: 20px; color: white; outline: none; }
     .composer-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px solid var(--card-border); padding-top: 10px; }
     .action-btn { background: transparent; border: none; color: var(--text-sub); font-size: 0.85rem; display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 6px 12px; border-radius: 6px; }
-    .action-btn:hover { background: #1e293b; color: var(--accent); }
     .btn-publish { background: var(--accent); color: var(--bg-dark); border: none; padding: 8px 18px; border-radius: 20px; font-weight: bold; cursor: pointer; }
 
-    /* Post Card */
     .post-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; }
     .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
     .post-header img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
     .post-author { font-size: 0.95rem; font-weight: bold; }
     .post-time { font-size: 0.75rem; color: var(--text-sub); }
-    .post-content { font-size: 0.95rem; line-height: 1.4; margin-bottom: 12px; }
 
-    /* Widgets */
     .widget-box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
     .widget-title { font-size: 0.9rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-sub); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 
@@ -250,7 +254,6 @@
     .match-card.loss { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
     .match-champion-img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
 
-    /* Modales */
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
     .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); padding: 25px; border-radius: 12px; width: 100%; max-width: 480px; position: relative; }
     .close-modal { position: absolute; top: 15px; right: 15px; font-size: 1.2rem; color: var(--text-sub); cursor: pointer; }
@@ -258,9 +261,7 @@
 </head>
 <body>
 
-  <!-- =========================================================
-       1. LANDING SCREEN (PRIMERA PANTALLA)
-       ========================================================= -->
+  <!-- LANDING / AUTH -->
   <div id="landing-screen">
     <div class="landing-card">
       <div class="landing-brand"><i class="fa-solid fa-shield-halved"></i> SEBISX</div>
@@ -271,7 +272,6 @@
         <button class="auth-tab-btn" onclick="switchAuthTab('register')">Registrarse</button>
       </div>
 
-      <!-- Tab Login -->
       <div id="auth-login">
         <input type="email" id="login-email" class="form-control" placeholder="Correo Electrónico" />
         <input type="password" id="login-password" class="form-control" placeholder="Contraseña" />
@@ -279,7 +279,6 @@
         <p id="login-msg" style="color: #ef4444; margin-top: 10px; font-size: 0.85rem;"></p>
       </div>
 
-      <!-- Tab Register -->
       <div id="auth-register" class="hidden">
         <input type="text" id="reg-username" class="form-control" placeholder="Nombre de Usuario" />
         <input type="email" id="reg-email" class="form-control" placeholder="Correo Electrónico" />
@@ -293,12 +292,8 @@
     </div>
   </div>
 
-
-  <!-- =========================================================
-       2. DASHBOARD DE LA COMUNIDAD (PROTEGIDO)
-       ========================================================= -->
+  <!-- DASHBOARD PRINCIPAL -->
   <div id="app-dashboard" class="hidden">
-    <!-- Top Navbar -->
     <header class="navbar">
       <div class="nav-left">
         <span class="brand-logo"><i class="fa-solid fa-shield-halved"></i> SEBISX</span>
@@ -322,9 +317,7 @@
       </div>
     </header>
 
-    <!-- Layout principal -->
     <div class="app-layout">
-      <!-- Sidebar Izquierdo -->
       <aside class="sidebar-left">
         <div class="menu-group">
           <a class="menu-item active"><i class="fa-solid fa-house"></i> Inicio</a>
@@ -334,9 +327,8 @@
         </div>
       </aside>
 
-      <!-- Feed Central -->
       <main class="feed-container">
-        <!-- Hero / Portada -->
+        <!-- Hero Profile -->
         <section class="profile-hero">
           <div class="banner-img-container">
             <img id="profile-banner" class="banner-img" src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_0.jpg" alt="Portada" />
@@ -356,11 +348,12 @@
               </div>
             </div>
 
+            <!-- RANGOS SOLICITADOS -->
             <div id="ranks-container"></div>
           </div>
         </section>
 
-        <!-- Publicador de Estado -->
+        <!-- Publicador -->
         <section class="post-composer">
           <div class="composer-input">
             <img id="composer-avatar" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" onerror="this.src='https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png'" />
@@ -372,26 +365,19 @@
           </div>
         </section>
 
-        <!-- Feed dinámico -->
         <div id="posts-feed" style="display:flex; flex-direction:column; gap:20px;"></div>
       </main>
 
-      <!-- Sidebar Derecho -->
       <aside class="sidebar-right">
         <div class="widget-box">
           <div class="widget-title"><i class="fa-solid fa-trophy" style="color: var(--accent);"></i> Últimas Partidas</div>
           <div id="matches-container"></div>
         </div>
-
-        <div class="widget-box">
-          <div class="widget-title">Acerca de</div>
-          <p style="font-size:0.85rem; color:var(--text-sub); line-height:1.4;">Red social exclusiva para la comunidad de League of Legends. Sube de elo y comparte tus mejores jugadas.</p>
-        </div>
       </aside>
     </div>
   </div>
 
-  <!-- Modal para Cambiar Portada -->
+  <!-- Modal Portada -->
   <div class="modal" id="modal-banner">
     <div class="modal-content">
       <i class="fa-solid fa-xmark close-modal" onclick="closeBannerModal()"></i>
@@ -529,6 +515,7 @@
         document.getElementById('profile-banner').src = profile.banner_url;
       }
 
+      // OBTENER RANGOS Y PARTIDAS DESDE EL BACKEND
       if (profile.game_name && profile.tag_line) {
         fetch(`${API_URL}/player/${encodeURIComponent(profile.game_name)}/${encodeURIComponent(profile.tag_line)}`)
           .then(res => res.json())
@@ -539,9 +526,17 @@
               document.getElementById('profile-avatar').src = iconUrl;
               document.getElementById('composer-avatar').src = iconUrl;
             }
-            renderRankBadges(lolData.solo, lolData.flex);
+
+            // SOPORTE PARA DIFERENTES ESTRUCTURAS DE RESPUESTA
+            const soloData = lolData.solo || (Array.isArray(lolData.ranks) ? lolData.ranks.find(r => r.queueType === 'RANKED_SOLO_5x5') : null);
+            const flexData = lolData.flex || (Array.isArray(lolData.ranks) ? lolData.ranks.find(r => r.queueType === 'RANKED_FLEX_SR') : null);
+
+            renderRankBadges(soloData, flexData);
           })
-          .catch(() => renderRankBadges(null, null));
+          .catch((err) => {
+            console.error('Error al obtener datos del jugador:', err);
+            renderRankBadges(null, null);
+          });
 
         loadMatchHistory(profile.game_name, profile.tag_line);
       } else {
@@ -553,23 +548,34 @@
       const container = document.getElementById('ranks-container');
       if (!container) return;
 
-      const formatCard = (data, queueName, typeClass, iconUrl) => {
-        const tierText = data ? `${data.tier} ${data.rank}` : 'UNRANKED';
+      const formatCard = (data, queueName, typeClass) => {
+        let tierText = 'UNRANKED';
+        let lpText = '';
+        let tierClass = 'tier-unranked';
+
+        if (data && data.tier) {
+          const tierUpper = data.tier.toUpperCase();
+          const rankVal = data.rank || '';
+          tierText = `${tierUpper} ${rankVal}`.trim();
+          lpText = data.leaguePoints !== undefined ? `${data.leaguePoints} LP` : '';
+          tierClass = `tier-${tierUpper.toLowerCase()}`;
+        }
+
         return `
           <div class="rank-card-box ${typeClass}">
-            <img src="${iconUrl}" class="rank-icon-img" alt="${queueName}" onerror="this.src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/unranked.png'"/>
+            <div class="rank-icon-badge ${tierClass}">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
             <div>
-              <span class="rank-queue">${queueName}</span>
+              <span class="rank-queue-title">${queueName}</span>
               <span class="rank-tier-text">${tierText}</span>
+              ${lpText ? `<span class="rank-lp-text">${lpText}</span>` : ''}
             </div>
           </div>
         `;
       };
 
-      const soloIcon = 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-emblems/master.png';
-      const flexIcon = 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-emblems/diamond.png';
-
-      container.innerHTML = formatCard(solo, 'SOLOQ', 'soloq', soloIcon) + formatCard(flex, 'FLEX', 'flex', flexIcon);
+      container.innerHTML = formatCard(solo, 'SOLOQ', 'soloq') + formatCard(flex, 'FLEX', 'flex');
     }
 
     async function loadMatchHistory(gameName, tagLine) {
