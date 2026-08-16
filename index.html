@@ -220,8 +220,12 @@
           <div class="hero-avatar-box">
             <img id="profile-avatar" class="hero-avatar" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" onerror="this.src='https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png'" />
             <div class="hero-details">
-              <h2 id="profile-title">Comunidad SEBISX <i class="fa-solid fa-circle-check" style="color:var(--accent); font-size:1rem;"></i></h2>
-              <p id="profile-subtitle">Inicia sesión para vincular tu cuenta de LoL</p>
+  <h2 id="profile-title">Comunidad SEBISX <i class="fa-solid fa-circle-check" style="color:var(--accent); font-size:1rem;"></i></h2>
+  <p id="profile-subtitle">Inicia sesión para vincular tu cuenta de LoL</p>
+  
+  <!-- CONTENEDOR NUEVO PARA LOS RANGOS -->
+  <div id="ranks-container" style="display:flex; gap:10px; margin-top:8px;"></div>
+</div>
             </div>
           </div>
         </div>
@@ -348,6 +352,21 @@
         document.getElementById('auth-register').classList.remove('hidden');
       }
     }
+    function renderRankBadges(solo, flex) {
+  const container = document.getElementById('ranks-container');
+  if (!container) return;
+
+  const formatRank = (data, title) => {
+    if (!data) return `<span style="background:#0b0f19; border:1px solid var(--card-border); padding:4px 10px; border-radius:12px; font-size:0.75rem; color:var(--text-sub);">${title}: Unranked</span>`;
+    return `
+      <span style="background:#0b0f19; border:1px solid var(--card-border); padding:4px 10px; border-radius:12px; font-size:0.75rem; color:var(--accent); font-weight:bold;">
+        ${title}: ${data.tier} ${data.rank} (${data.lp} LP)
+      </span>
+    `;
+  };
+
+  container.innerHTML = formatRank(solo, 'SoloQ') + formatRank(flex, 'Flex');
+}
 
     function openBannerModal() {
       if (!currentUser) {
