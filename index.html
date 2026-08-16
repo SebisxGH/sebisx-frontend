@@ -379,19 +379,19 @@
     const API_URL = 'https://sebisx-backend.onrender.com/api';
     let currentUser = null;
 
-    // Mapa de imágenes de rangos alojados en CDN oficial
+    // Mapa de imágenes de rangos optimizado para evitar bloqueos de carga (CORS)
     const RANK_ICONS = {
-      IRON: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblems/iron.png',
-      BRONZE: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblems/bronze.png',
-      SILVER: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblems/silver.png',
-      GOLD: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblems/gold.png',
-      PLATINUM: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblems/platinum.png',
-      EMERALD: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblems/emerald.png',
-      DIAMOND: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblems/diamond.png',
-      MASTER: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblems/master.png',
-      GRANDMASTER: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblems/grandmaster.png',
-      CHALLENGER: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblems/challenger.png',
-      UNRANKED: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblems/unranked.png'
+      IRON: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/iron.png',
+      BRONZE: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/bronze.png',
+      SILVER: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/silver.png',
+      GOLD: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/gold.png',
+      PLATINUM: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/platinum.png',
+      EMERALD: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/emerald.png',
+      DIAMOND: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/diamond.png',
+      MASTER: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/master.png',
+      GRANDMASTER: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/grandmaster.png',
+      CHALLENGER: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/challenger.png',
+      UNRANKED: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/unranked.png'
     };
 
     function switchAuthTab(tab) {
@@ -565,7 +565,7 @@
 
         return `
           <div class="rank-card-box ${typeClass}">
-            <img class="rank-img-badge" src="${iconUrl}" alt="${tierText}" onerror="this.src='${RANK_ICONS.UNRANKED}'" />
+            <img class="rank-img-badge" src="${iconUrl}" alt="${tierText}" referrerpolicy="no-referrer" onerror="this.src='${RANK_ICONS.UNRANKED}'" />
             <div>
               <span class="rank-queue-title">${queueName}</span>
               <span class="rank-tier-text">${tierText}</span>
