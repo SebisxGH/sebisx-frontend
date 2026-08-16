@@ -379,19 +379,33 @@
     const API_URL = 'https://sebisx-backend.onrender.com/api';
     let currentUser = null;
 
-    // Mapa de imágenes de rangos optimizado para evitar bloqueos de carga (CORS)
+    // Repositorio de emblemas oficiales de Riot Developer Portal (CDN GitHub Raw directo sin CORS)
     const RANK_ICONS = {
-      IRON: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/iron.png',
-      BRONZE: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/bronze.png',
-      SILVER: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/silver.png',
-      GOLD: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/gold.png',
-      PLATINUM: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/platinum.png',
-      EMERALD: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/emerald.png',
-      DIAMOND: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/diamond.png',
-      MASTER: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/master.png',
-      GRANDMASTER: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/grandmaster.png',
-      CHALLENGER: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/challenger.png',
-      UNRANKED: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-emblem/unranked.png'
+      IRON: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Iron.png',
+      BRONZE: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Bronze.png',
+      SILVER: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Silver.png',
+      GOLD: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Gold.png',
+      PLATINUM: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Platinum.png',
+      EMERALD: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Emerald.png',
+      DIAMOND: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Diamond.png',
+      MASTER: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Master.png',
+      GRANDMASTER: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Grandmaster.png',
+      CHALLENGER: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Challenger.png',
+      UNRANKED: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Unranked.png'
+    };
+
+    const RANK_COLORS = {
+      IRON: '#575459',
+      BRONZE: '#8c513a',
+      SILVER: '#80989d',
+      GOLD: '#cd8837',
+      PLATINUM: '#4e9996',
+      EMERALD: '#23a067',
+      DIAMOND: '#576bce',
+      MASTER: '#9d48e0',
+      GRANDMASTER: '#e34343',
+      CHALLENGER: '#f4c875',
+      UNRANKED: '#475569'
     };
 
     function switchAuthTab(tab) {
@@ -562,10 +576,18 @@
         }
 
         const iconUrl = RANK_ICONS[tierKey] || RANK_ICONS.UNRANKED;
+        const badgeColor = RANK_COLORS[tierKey] || RANK_COLORS.UNRANKED;
 
         return `
           <div class="rank-card-box ${typeClass}">
-            <img class="rank-img-badge" src="${iconUrl}" alt="${tierText}" referrerpolicy="no-referrer" onerror="this.src='${RANK_ICONS.UNRANKED}'" />
+            <img class="rank-img-badge" 
+                 src="${iconUrl}" 
+                 alt="${tierText}" 
+                 crossorigin="anonymous"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <div class="rank-fallback-avatar" style="display:none; width:44px; height:44px; border-radius:50%; background:${badgeColor}; color:#fff; font-weight:bold; align-items:center; justify-content:center; font-size:1.1rem; box-shadow: 0 0 10px ${badgeColor}80;">
+              ${tierKey.charAt(0)}
+            </div>
             <div>
               <span class="rank-queue-title">${queueName}</span>
               <span class="rank-tier-text">${tierText}</span>
