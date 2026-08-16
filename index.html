@@ -3,560 +3,312 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SEBISX.COM - Comunidad LoL</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>Tarjeta de Invocador</title>
   <style>
-    :root {
-      --bg-dark: #090d16;
-      --card-bg: #121824;
-      --card-border: #1e293b;
-      --accent: #38bdf8;
-      --accent-hover: #0284c7;
-      --text-main: #f8fafc;
-      --text-sub: #94a3b8;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-    body { background-color: var(--bg-dark); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
-
-    .hidden { display: none !important; }
-
-    /* LANDING SCREEN */
-    #landing-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 1000;
-      background: linear-gradient(135deg, rgba(9,13,22,0.92) 0%, rgba(18,24,36,0.95) 100%), 
-                  url('https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_0.jpg') center/cover no-repeat;
+    body {
+      background-color: #0c0f17;
+      color: #ffffff;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      min-height: 100vh;
       padding: 20px;
     }
 
-    .landing-card {
-      background: rgba(18, 24, 36, 0.85);
-      border: 1px solid var(--card-border);
-      backdrop-filter: blur(16px);
-      padding: 35px 30px;
-      border-radius: 16px;
+    /* Contenedor principal de la tarjeta */
+    .profile-card {
+      position: relative;
       width: 100%;
-      max-width: 440px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-      text-align: center;
-    }
-
-    .landing-brand { font-size: 2rem; font-weight: 800; color: var(--accent); margin-bottom: 8px; letter-spacing: 1px; }
-    .landing-subtitle { font-size: 0.9rem; color: var(--text-sub); margin-bottom: 25px; }
-
-    .auth-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--card-border); padding-bottom: 10px; }
-    .auth-tab-btn { flex: 1; padding: 10px; background: transparent; border: none; color: var(--text-sub); font-weight: bold; cursor: pointer; border-radius: 6px; }
-    .auth-tab-btn.active { background: var(--accent); color: var(--bg-dark); }
-
-    input.form-control { width: 100%; padding: 12px; background: #0b0f19; border: 1px solid var(--card-border); border-radius: 8px; color: white; margin-top: 10px; outline: none; }
-    input.form-control:focus { border-color: var(--accent); }
-    .btn-block { width: 100%; margin-top: 18px; padding: 12px; background: var(--accent); color: var(--bg-dark); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-    .btn-block:hover { background: var(--accent-hover); }
-
-    /* DASHBOARD */
-    header.navbar {
-      height: 60px;
-      background: var(--card-bg);
-      border-bottom: 1px solid var(--card-border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .nav-left { display: flex; align-items: center; gap: 15px; }
-    .brand-logo { color: var(--accent); font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; }
-    .search-bar { background: #0b0f19; border: 1px solid var(--card-border); border-radius: 20px; padding: 6px 14px; display: flex; align-items: center; gap: 8px; width: 260px; }
-    .search-bar input { background: transparent; border: none; color: white; outline: none; width: 100%; font-size: 0.9rem; }
-
-    .nav-center { display: flex; gap: 25px; }
-    .nav-center i { font-size: 1.2rem; color: var(--text-sub); cursor: pointer; padding: 10px; transition: 0.2s; }
-    .nav-center i.active, .nav-center i:hover { color: var(--accent); }
-
-    .nav-right { display: flex; align-items: center; gap: 15px; }
-    .user-pill { display: flex; align-items: center; gap: 8px; background: #0b0f19; padding: 6px 14px; border-radius: 20px; border: 1px solid var(--card-border); }
-    .user-pill img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
-
-    .app-layout {
-      display: grid;
-      grid-template-columns: 240px 1fr 300px;
-      gap: 20px;
-      max-width: 1400px;
-      margin: 20px auto;
-      width: 100%;
-      padding: 0 20px;
-      flex: 1;
-    }
-
-    .sidebar-left .menu-group { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 10px; margin-bottom: 15px; }
-    .menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; color: var(--text-sub); border-radius: 8px; cursor: pointer; text-decoration: none; font-size: 0.95rem; font-weight: 500; }
-    .menu-item:hover, .menu-item.active { background: #1e293b; color: var(--accent); }
-
-    .feed-container { display: flex; flex-direction: column; gap: 20px; }
-
-    /* HÉROE Y PORTADA */
-    .profile-hero { 
-      background: #0b0f19; 
-      border: 1px solid var(--card-border); 
-      border-radius: 16px; 
-      position: relative; 
+      max-width: 850px;
       height: 320px;
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      background-color: #121624;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
     }
 
-    .banner-img-container { height: 100%; width: 100%; position: relative; }
-    .banner-img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
-
-    .banner-overlay {
+    /* Imagen de portada de fondo */
+    .banner-bg {
       position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(9, 13, 22, 0.2) 0%, rgba(9, 13, 22, 0.85) 75%, rgba(9, 13, 22, 0.98) 100%);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: brightness(0.65);
       z-index: 1;
     }
 
-    .btn-edit-banner { 
-      position: absolute; 
-      top: 16px; 
-      right: 16px; 
-      background: rgba(15, 23, 42, 0.75); 
-      color: white; 
-      border: 1px solid rgba(255,255,255,0.25); 
-      padding: 8px 16px; 
-      border-radius: 8px; 
-      cursor: pointer; 
-      font-size: 0.85rem; 
-      backdrop-filter: blur(8px); 
-      font-weight: 600; 
-      z-index: 3;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .hero-content-overlay {
+    /* Capa oscura superpuesta para legibilidad */
+    .overlay {
       position: absolute;
-      bottom: 20px;
-      left: 24px;
-      right: 24px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 20px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, rgba(12, 15, 23, 0.2) 0%, rgba(12, 15, 23, 0.85) 100%);
       z-index: 2;
     }
 
-    .hero-user-group { display: flex; align-items: flex-end; gap: 20px; flex: 1; }
-
-    .hero-avatar-ring { 
-      position: relative;
-      width: 125px; 
-      height: 125px; 
-      border-radius: 50%; 
-      padding: 4px;
-      background: linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #06b6d4 100%);
-      box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
-      flex-shrink: 0;
-    }
-
-    .hero-avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid #090d16; display: block; }
-    .hero-details { display: flex; flex-direction: column; margin-bottom: 6px; }
-    .user-role-label { font-size: 0.7rem; font-weight: 800; letter-spacing: 1.5px; color: #c084fc; text-transform: uppercase; }
-
-    .hero-details h2 { 
-      font-size: 2rem; 
-      font-weight: 800;
-      color: #ffffff;
-      display: flex; 
-      align-items: baseline; 
-      gap: 6px; 
-      line-height: 1.1;
-      margin: 2px 0 6px 0;
-    }
-
-    .user-tagline { color: #a855f7; font-weight: 700; }
-    .user-glow-line { height: 2px; width: 100%; max-width: 300px; background: linear-gradient(90deg, #a855f7 0%, rgba(168, 85, 247, 0) 100%); border-radius: 2px; }
-
-    /* TARJETAS E IMÁGENES DE RANGOS */
-    #ranks-container { display: flex; gap: 12px; align-items: center; }
-
-    .rank-card-box {
+    /* Botón cambiar portada */
+    .btn-change-cover {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+      background: rgba(18, 22, 36, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 10px 16px;
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(10px);
-      border-radius: 12px;
-      min-width: 170px;
+      gap: 8px;
+      transition: all 0.2s ease;
     }
 
-    .rank-card-box.soloq { border: 1px solid rgba(168, 85, 247, 0.5); box-shadow: 0 0 15px rgba(168, 85, 247, 0.15); }
-    .rank-card-box.flex { border: 1px solid rgba(56, 189, 248, 0.5); box-shadow: 0 0 15px rgba(56, 189, 248, 0.15); }
+    .btn-change-cover:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* Contenido inferior */
+    .card-content {
+      position: relative;
+      z-index: 5;
+      padding: 24px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    /* Sección de perfil e invocador */
+    .summoner-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .icon-wrapper {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      padding: 4px;
+      background: linear-gradient(135deg, #a855f7, #06b6d4);
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+      flex-shrink: 0;
+    }
+
+    .profile-icon {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      border: 3px solid #121624;
+    }
+
+    .user-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .summoner-label {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #a855f7;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .summoner-name-container {
+      display: flex;
+      align-items: baseline;
+      gap: 2px;
+    }
+
+    .summoner-name {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1;
+    }
+
+    .summoner-tag {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #a855f7;
+    }
+
+    /* Contenedor de rangos */
+    .ranks-container {
+      display: flex;
+      gap: 16px;
+    }
+
+    .rank-card-box {
+      background: rgba(18, 22, 36, 0.75);
+      backdrop-filter: blur(12px);
+      border-radius: 12px;
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 160px;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .rank-card-box.soloq {
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      box-shadow: inset 0 0 15px rgba(168, 85, 247, 0.1);
+    }
+
+    .rank-card-box.flex {
+      border: 1px solid rgba(6, 182, 212, 0.4);
+      box-shadow: inset 0 0 15px rgba(6, 182, 212, 0.1);
+    }
+
+    .rank-card-box:hover {
+      transform: translateY(-2px);
+    }
 
     .rank-img-badge {
-      width: 48px;
-      height: 48px;
+      width: 46px;
+      height: 46px;
       object-fit: contain;
-      flex-shrink: 0;
-      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+      filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
     }
 
-    .rank-queue-title { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.5px; display: block; }
-    .rank-card-box.soloq .rank-queue-title { color: #c084fc; }
-    .rank-card-box.flex .rank-queue-title { color: #38bdf8; }
+    .rank-queue-title {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: #06b6d4;
+      letter-spacing: 1px;
+    }
 
-    .rank-tier-text { font-size: 0.9rem; font-weight: 800; color: #ffffff; text-transform: uppercase; }
-    .rank-lp-text { font-size: 0.75rem; color: var(--text-sub); display: block; }
+    .rank-card-box.soloq .rank-queue-title {
+      color: #a855f7;
+    }
 
-    /* POST COMPOSER & CARDS */
-    .post-composer { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; }
-    .composer-input { display: flex; align-items: center; gap: 12px; }
-    .composer-input img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
-    .composer-input input { width: 100%; background: #0b0f19; border: 1px solid var(--card-border); padding: 12px; border-radius: 20px; color: white; outline: none; }
-    .composer-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px solid var(--card-border); padding-top: 10px; }
-    .action-btn { background: transparent; border: none; color: var(--text-sub); font-size: 0.85rem; display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 6px 12px; border-radius: 6px; }
-    .btn-publish { background: var(--accent); color: var(--bg-dark); border: none; padding: 8px 18px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+    .rank-tier-text {
+      display: block;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.2;
+    }
 
-    .post-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; }
-    .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-    .post-header img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
-    .post-author { font-size: 0.95rem; font-weight: bold; }
-    .post-time { font-size: 0.75rem; color: var(--text-sub); }
-
-    .widget-box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
-    .widget-title { font-size: 0.9rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-sub); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-
-    .match-card { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-radius: 8px; margin-bottom: 8px; background: #0b0f19; border-left: 4px solid var(--card-border); }
-    .match-card.win { border-left-color: #22c55e; background: rgba(34, 197, 94, 0.05); }
-    .match-card.loss { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
-    .match-champion-img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
-
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
-    .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); padding: 25px; border-radius: 12px; width: 100%; max-width: 480px; position: relative; }
-    .close-modal { position: absolute; top: 15px; right: 15px; font-size: 1.2rem; color: var(--text-sub); cursor: pointer; }
+    .rank-lp-text {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #94a3b8;
+    }
   </style>
 </head>
 <body>
 
-  <!-- LANDING / AUTH -->
-  <div id="landing-screen">
-    <div class="landing-card">
-      <div class="landing-brand"><i class="fa-solid fa-shield-halved"></i> SEBISX</div>
-      <p class="landing-subtitle">Únete a la red social de League of Legends</p>
+  <div class="profile-card">
+    <!-- Imagen de fondo/portada (Arcane Jinx) -->
+    <img src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jinx_37.jpg" alt="Portada Jinx" class="banner-bg" />
+    <div class="overlay"></div>
 
-      <div class="auth-tabs">
-        <button class="auth-tab-btn active" onclick="switchAuthTab('login')">Ingresar</button>
-        <button class="auth-tab-btn" onclick="switchAuthTab('register')">Registrarse</button>
-      </div>
+    <!-- Botón cambiar portada -->
+    <button class="btn-change-cover">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+        <circle cx="12" cy="13" r="4"></circle>
+      </svg>
+      Cambiar Portada
+    </button>
 
-      <div id="auth-login">
-        <input type="email" id="login-email" class="form-control" placeholder="Correo Electrónico" />
-        <input type="password" id="login-password" class="form-control" placeholder="Contraseña" />
-        <button class="btn-block" onclick="handleLogin()">Entrar</button>
-        <p id="login-msg" style="color: #ef4444; margin-top: 10px; font-size: 0.85rem;"></p>
-      </div>
-
-      <div id="auth-register" class="hidden">
-        <input type="text" id="reg-username" class="form-control" placeholder="Nombre de Usuario" />
-        <input type="email" id="reg-email" class="form-control" placeholder="Correo Electrónico" />
-        <input type="password" id="reg-password" class="form-control" placeholder="Contraseña (mín. 6 caracteres)" />
-        <p style="font-size:0.8rem; color:var(--text-sub); margin-top:12px; text-align:left;">Datos de League of Legends:</p>
-        <input type="text" id="reg-gamename" class="form-control" placeholder="Nombre LoL (ej. Sebisx)" />
-        <input type="text" id="reg-tagline" class="form-control" placeholder="Tag LoL (ej. LAS)" />
-        <button class="btn-block" onclick="handleRegister()">Registrarme</button>
-        <p id="reg-msg" style="color: #ef4444; margin-top: 10px; font-size: 0.85rem;"></p>
-      </div>
-    </div>
-  </div>
-
-  <!-- DASHBOARD PRINCIPAL -->
-  <div id="app-dashboard" class="hidden">
-    <header class="navbar">
-      <div class="nav-left">
-        <span class="brand-logo"><i class="fa-solid fa-shield-halved"></i> SEBISX</span>
-        <div class="search-bar">
-          <i class="fa-solid fa-magnifying-glass" style="color: var(--text-sub);"></i>
-          <input type="text" placeholder="Buscar en Comunidad LoL..." />
+    <!-- Contenido -->
+    <div class="card-content">
+      <!-- Datos del Invocador -->
+      <div class="summoner-info">
+        <div class="icon-wrapper">
+          <img src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/538.png" alt="Icono de Invocador" class="profile-icon" />
+        </div>
+        <div class="user-details">
+          <span class="summoner-label">Invocador</span>
+          <div class="summoner-name-container">
+            <h1 class="summoner-name" id="summoner-name">Sebisx</h1>
+            <span class="summoner-tag" id="summoner-tag">#Faker</span>
+          </div>
         </div>
       </div>
-      <div class="nav-center">
-        <i class="fa-solid fa-house active"></i>
-        <i class="fa-solid fa-user-group"></i>
-        <i class="fa-solid fa-gamepad"></i>
-        <i class="fa-solid fa-tv"></i>
+
+      <!-- Rangos (SoloQ y Flex) -->
+      <div class="ranks-container" id="ranks-container">
+        <!-- Renderizado dinámico vía JavaScript -->
       </div>
-      <div class="nav-right">
-        <div class="user-pill">
-          <img id="nav-avatar" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" onerror="this.src='https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png'" />
-          <span id="nav-username" style="font-size:0.85rem; font-weight:bold;">Cargando...</span>
-        </div>
-        <button id="btn-logout" class="action-btn" onclick="handleLogout()" style="color:#ef4444;"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
-      </div>
-    </header>
-
-    <div class="app-layout">
-      <aside class="sidebar-left">
-        <div class="menu-group">
-          <a class="menu-item active"><i class="fa-solid fa-house"></i> Inicio</a>
-          <a class="menu-item"><i class="fa-solid fa-compass"></i> Explorar</a>
-          <a class="menu-item"><i class="fa-solid fa-bell"></i> Notificaciones</a>
-          <a class="menu-item"><i class="fa-solid fa-bookmark"></i> Guardados</a>
-        </div>
-      </aside>
-
-      <main class="feed-container">
-        <!-- Hero Profile -->
-        <section class="profile-hero">
-          <div class="banner-img-container">
-            <img id="profile-banner" class="banner-img" src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_0.jpg" alt="Portada" />
-            <div class="banner-overlay"></div>
-            <button class="btn-edit-banner" onclick="openBannerModal()"><i class="fa-solid fa-camera"></i> Cambiar Portada</button>
-          </div>
-          
-          <div class="hero-content-overlay">
-            <div class="hero-user-group">
-              <div class="hero-avatar-ring">
-                <img id="profile-avatar" class="hero-avatar" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" onerror="this.src='https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png'" />
-              </div>
-              <div class="hero-details">
-                <span class="user-role-label">INVOCADOR</span>
-                <h2 id="profile-title">Usuario <span class="user-tagline">#TAG</span></h2>
-                <div class="user-glow-line"></div>
-              </div>
-            </div>
-
-            <!-- RANGOS E IMÁGENES -->
-            <div id="ranks-container"></div>
-          </div>
-        </section>
-
-        <!-- Publicador -->
-        <section class="post-composer">
-          <div class="composer-input">
-            <img id="composer-avatar" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" onerror="this.src='https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png'" />
-            <input type="text" id="post-input-text" placeholder="¿Qué estás pensando, invocador?" />
-          </div>
-          <div class="composer-actions">
-            <button class="action-btn"><i class="fa-solid fa-image" style="color:#22c55e;"></i> Foto</button>
-            <button class="btn-publish" onclick="publishPost()">Publicar</button>
-          </div>
-        </section>
-
-        <div id="posts-feed" style="display:flex; flex-direction:column; gap:20px;"></div>
-      </main>
-
-      <aside class="sidebar-right">
-        <div class="widget-box">
-          <div class="widget-title"><i class="fa-solid fa-trophy" style="color: var(--accent);"></i> Últimas Partidas</div>
-          <div id="matches-container"></div>
-        </div>
-      </aside>
-    </div>
-  </div>
-
-  <!-- Modal Portada -->
-  <div class="modal" id="modal-banner">
-    <div class="modal-content">
-      <i class="fa-solid fa-xmark close-modal" onclick="closeBannerModal()"></i>
-      <h3>Cambiar Imagen de Portada</h3>
-      <p style="font-size:0.85rem; color:var(--text-sub); margin-top:5px;">Pega la URL directa de la imagen (JPG/PNG):</p>
-      <input type="text" id="input-banner-url" class="form-control" placeholder="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aatrox_0.jpg" />
-      <button class="btn-block" onclick="saveBannerUrl()">Guardar Portada</button>
-      <p id="banner-msg" style="margin-top: 10px; font-size: 0.85rem; text-align: center;"></p>
     </div>
   </div>
 
   <script>
-    const API_URL = 'https://sebisx-backend.onrender.com/api';
-    let currentUser = null;
-
-    // Repositorio de emblemas oficiales de Riot Developer Portal (CDN GitHub Raw directo sin CORS)
+    // URLs desde jsDelivr CDN (Riot Games Developer Assets)
+    // Resuelve el problema de CORS y hotlink que causa el fallback 'S'
     const RANK_ICONS = {
-      IRON: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Iron.png',
-      BRONZE: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Bronze.png',
-      SILVER: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Silver.png',
-      GOLD: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Gold.png',
-      PLATINUM: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Platinum.png',
-      EMERALD: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Emerald.png',
-      DIAMOND: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Diamond.png',
-      MASTER: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Master.png',
-      GRANDMASTER: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Grandmaster.png',
-      CHALLENGER: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Challenger.png',
-      UNRANKED: 'https://raw.githubusercontent.com/RiotGames/developer-relations/main/assets/ranked-emblems/Unranked.png'
+      IRON: 'https://cdn.jsdelivr.net/gh/RiotGames/developer-relations/assets/ranked-emblems/Iron.png',
+      BRONZE: 'https://cdn.jsdelivr.net/gh/RiotGames/developer-relations/assets/ranked-emblems/Bronze.png',
+      SILVER: 'https://cdn.jsdelivr.net/gh/RiotGames/developer-relations/assets/ranked-emblems/Silver.png',
+      GOLD: 'https://cdn.jsdelivr.net/gh/RiotGames/developer-relations/assets/ranked-emblems/Gold.png',
+      PLATINUM: 'https://cdn.jsdelivr.net/gh/RiotGames/developer-relations/assets/ranked-emblems/Platinum.png',
+      EMERALD: 'https://cdn.jsdelivr.net/gh/RiotGames/developer-relations/assets/ranked-emblems/Emerald.png',
+      DIAMOND: 'https://cdn.jsdelivr.net/gh/RiotGames/developer-relations/assets/ranked-emblems/Diamond.png',
+      MASTER: 'https://cdn.jsdelivr.net/gh/RiotGames/developer-relations/assets/ranked-emblems/Master.png',
+      GRANDMASTER: 'https://cdn.jsdelivr.net/gh/RiotGames/developer-relations/assets/ranked-emblems/Grandmaster.png',
+      CHALLENGER: 'https://cdn.jsdelivr.net/gh/RiotGames/developer-relations/assets/ranked-emblems/Challenger.png',
+      UNRANKED: 'https://cdn.jsdelivr.net/gh/RiotGames/developer-relations/assets/ranked-emblems/Unranked.png'
     };
 
     const RANK_COLORS = {
-      IRON: '#575459',
-      BRONZE: '#8c513a',
-      SILVER: '#80989d',
-      GOLD: '#cd8837',
-      PLATINUM: '#4e9996',
-      EMERALD: '#23a067',
-      DIAMOND: '#576bce',
-      MASTER: '#9d48e0',
-      GRANDMASTER: '#e34343',
-      CHALLENGER: '#f4c875',
-      UNRANKED: '#475569'
+      IRON: '#8c8882',
+      BRONZE: '#a97142',
+      SILVER: '#8098a7',
+      GOLD: '#e0a943',
+      PLATINUM: '#43a089',
+      EMERALD: '#2cc081',
+      DIAMOND: '#5181e0',
+      MASTER: '#9d5be3',
+      GRANDMASTER: '#cd4646',
+      CHALLENGER: '#38b2ac',
+      UNRANKED: '#64748b'
     };
 
-    function switchAuthTab(tab) {
-      document.querySelectorAll('.auth-tab-btn').forEach(b => b.classList.remove('active'));
-      if (tab === 'login') {
-        document.querySelectorAll('.auth-tab-btn')[0].classList.add('active');
-        document.getElementById('auth-login').classList.remove('hidden');
-        document.getElementById('auth-register').classList.add('hidden');
-      } else {
-        document.querySelectorAll('.auth-tab-btn')[1].classList.add('active');
-        document.getElementById('auth-login').classList.add('hidden');
-        document.getElementById('auth-register').classList.remove('hidden');
-      }
-    }
+    // Datos simulados de la API de Riot
+    const mockDataSoloQ = {
+      tier: 'SILVER',
+      rank: 'I',
+      leaguePoints: 75
+    };
 
-    async function handleLogin() {
-      const email = document.getElementById('login-email').value.trim();
-      const password = document.getElementById('login-password').value;
-      const msg = document.getElementById('login-msg');
-
-      msg.style.color = '#38bdf8';
-      msg.innerText = 'Verificando...';
-
-      try {
-        const res = await fetch(`${API_URL}/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-        const data = await res.json();
-
-        if (res.ok) {
-          localStorage.setItem('sebisx_session', JSON.stringify(data));
-          initApp();
-        } else {
-          msg.style.color = '#ef4444';
-          msg.innerText = data.error || 'Credenciales incorrectas';
-        }
-      } catch (err) {
-        msg.style.color = '#ef4444';
-        msg.innerText = 'Error de conexión con el servidor.';
-      }
-    }
-
-    async function handleRegister() {
-      const username = document.getElementById('reg-username').value.trim();
-      const email = document.getElementById('reg-email').value.trim();
-      const password = document.getElementById('reg-password').value;
-      const gameName = document.getElementById('reg-gamename').value.trim();
-      const tagLine = document.getElementById('reg-tagline').value.trim();
-      const msg = document.getElementById('reg-msg');
-
-      if (!username || !email || !password || !gameName || !tagLine) {
-        msg.style.color = '#eab308';
-        msg.innerText = 'Por favor rellena todos los campos.';
-        return;
-      }
-
-      msg.style.color = '#38bdf8';
-      msg.innerText = 'Creando cuenta...';
-
-      try {
-        const res = await fetch(`${API_URL}/auth/register`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, username, gameName, tagLine })
-        });
-        const data = await res.json();
-
-        if (res.ok) {
-          msg.style.color = '#22c55e';
-          msg.innerText = '¡Registro exitoso! Iniciando sesión...';
-          
-          await new Promise(r => setTimeout(r, 1000));
-
-          const loginRes = await fetch(`${API_URL}/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-          });
-          const loginData = await loginRes.json();
-
-          if (loginRes.ok) {
-            localStorage.setItem('sebisx_session', JSON.stringify(loginData));
-            initApp();
-          } else {
-            switchAuthTab('login');
-          }
-        } else {
-          msg.style.color = '#ef4444';
-          msg.innerText = data.error || 'Error al registrarse.';
-        }
-      } catch (err) {
-        msg.style.color = '#ef4444';
-        msg.innerText = 'Error de conexión con el servidor.';
-      }
-    }
-
-    function initApp() {
-      const savedSession = localStorage.getItem('sebisx_session');
-
-      if (!savedSession) {
-        document.getElementById('landing-screen').classList.remove('hidden');
-        document.getElementById('app-dashboard').classList.add('hidden');
-        return;
-      }
-
-      document.getElementById('landing-screen').classList.add('hidden');
-      document.getElementById('app-dashboard').classList.remove('hidden');
-
-      currentUser = JSON.parse(savedSession);
-      const profile = currentUser.profile || currentUser;
-
-      if (profile.username || profile.game_name) {
-        const name = profile.username || profile.game_name;
-        const tag = profile.tag_line ? `#${profile.tag_line}` : '';
-        document.getElementById('nav-username').innerText = `@${name}`;
-        document.getElementById('profile-title').innerHTML = `${name} <span class="user-tagline">${tag}</span>`;
-      }
-
-      if (profile.banner_url) {
-        document.getElementById('profile-banner').src = profile.banner_url;
-      }
-
-      if (profile.game_name && profile.tag_line) {
-        console.log(`Buscando jugador: ${profile.game_name} #${profile.tag_line}`);
-
-        fetch(`${API_URL}/player/${encodeURIComponent(profile.game_name)}/${encodeURIComponent(profile.tag_line)}`)
-          .then(res => res.json())
-          .then(lolData => {
-            console.log('Respuesta recibida del Backend:', lolData);
-
-            if (lolData && lolData.profileIconId) {
-              const iconUrl = `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/${lolData.profileIconId}.png`;
-              document.getElementById('nav-avatar').src = iconUrl;
-              document.getElementById('profile-avatar').src = iconUrl;
-              document.getElementById('composer-avatar').src = iconUrl;
-            }
-
-            renderRankBadges(lolData.solo, lolData.flex);
-          })
-          .catch(err => {
-            console.error('Error al conectar con la API:', err);
-            renderRankBadges(null, null);
-          });
-
-        loadMatchHistory(profile.game_name, profile.tag_line);
-      } else {
-        renderRankBadges(null, null);
-      }
-    }
+    const mockDataFlex = {
+      tier: 'SILVER',
+      rank: 'II',
+      leaguePoints: 66
+    };
 
     function renderRankBadges(solo, flex) {
       const container = document.getElementById('ranks-container');
@@ -583,7 +335,7 @@
             <img class="rank-img-badge" 
                  src="${iconUrl}" 
                  alt="${tierText}" 
-                 crossorigin="anonymous"
+                 referrerpolicy="no-referrer"
                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
             <div class="rank-fallback-avatar" style="display:none; width:44px; height:44px; border-radius:50%; background:${badgeColor}; color:#fff; font-weight:bold; align-items:center; justify-content:center; font-size:1.1rem; box-shadow: 0 0 10px ${badgeColor}80;">
               ${tierKey.charAt(0)}
@@ -600,120 +352,10 @@
       container.innerHTML = formatCard(solo, 'SOLOQ', 'soloq') + formatCard(flex, 'FLEX', 'flex');
     }
 
-    async function loadMatchHistory(gameName, tagLine) {
-      const container = document.getElementById('matches-container');
-      if (!container) return;
-
-      container.innerHTML = '<p style="font-size:0.85rem; color:var(--text-sub);">Cargando partidas...</p>';
-
-      try {
-        const res = await fetch(`${API_URL}/matches/${encodeURIComponent(gameName)}/${encodeURIComponent(tagLine)}`);
-        const matches = await res.json();
-
-        if (!res.ok || !Array.isArray(matches) || matches.length === 0) {
-          container.innerHTML = '<p style="font-size:0.85rem; color:var(--text-sub);">No se encontraron partidas recientes.</p>';
-          return;
-        }
-
-        container.innerHTML = '';
-        matches.forEach(match => {
-          const isWin = match.win;
-          const statusClass = isWin ? 'win' : 'loss';
-          const statusText = isWin ? 'Victoria' : 'Derrota';
-          const statusColor = isWin ? '#22c55e' : '#ef4444';
-          const champIconUrl = `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${match.championName}.png`;
-
-          const matchHTML = `
-            <div class="match-card ${statusClass}">
-              <div style="display:flex; align-items:center; gap:10px;">
-                <img class="match-champion-img" src="${champIconUrl}" onerror="this.src='https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png'" />
-                <div>
-                  <span style="font-size:0.85rem; font-weight:bold; color: ${statusColor}">${statusText}</span><br>
-                  <span style="font-size:0.75rem; color:var(--text-sub);">${match.championName}</span>
-                </div>
-              </div>
-              <div style="text-align:right;">
-                <div style="font-size:0.85rem; font-weight:bold;">${match.kills}/${match.deaths}/${match.assists}</div>
-                <div style="font-size:0.75rem; color:var(--text-sub);">KDA: ${match.kda}</div>
-              </div>
-            </div>
-          `;
-          container.insertAdjacentHTML('beforeend', matchHTML);
-        });
-
-      } catch (err) {
-        container.innerHTML = '<p style="font-size:0.85rem; color:#ef4444;">Error al cargar partidas.</p>';
-      }
-    }
-
-    function openBannerModal() { document.getElementById('modal-banner').style.display = 'flex'; }
-    function closeBannerModal() { document.getElementById('modal-banner').style.display = 'none'; }
-
-    async function saveBannerUrl() {
-      const bannerUrl = document.getElementById('input-banner-url').value.trim();
-      const msg = document.getElementById('banner-msg');
-      if (!bannerUrl) return;
-
-      const userId = currentUser.user?.id || currentUser.profile?.id || currentUser.id;
-      msg.style.color = '#38bdf8';
-      msg.innerText = 'Guardando...';
-
-      try {
-        const res = await fetch(`${API_URL}/profile/update-banner`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: userId, bannerUrl: bannerUrl })
-        });
-
-        if (res.ok) {
-          document.getElementById('profile-banner').src = bannerUrl;
-          if (currentUser.profile) currentUser.profile.banner_url = bannerUrl;
-          else currentUser.banner_url = bannerUrl;
-          localStorage.setItem('sebisx_session', JSON.stringify(currentUser));
-
-          msg.style.color = '#22c55e';
-          msg.innerText = '¡Portada actualizada!';
-          setTimeout(() => closeBannerModal(), 1000);
-        }
-      } catch (err) {
-        msg.style.color = '#ef4444';
-        msg.innerText = 'Error al actualizar.';
-      }
-    }
-
-    function publishPost() {
-      const input = document.getElementById('post-input-text');
-      const text = input.value.trim();
-      if (!text) return;
-
-      const feed = document.getElementById('posts-feed');
-      const profile = currentUser.profile || currentUser;
-      const userAvatar = document.getElementById('nav-avatar').src;
-
-      const postHTML = `
-        <article class="post-card">
-          <div class="post-header">
-            <img src="${userAvatar}" onerror="this.src='https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png'" />
-            <div>
-              <div class="post-author">@${profile.username}</div>
-              <div class="post-time">Justo ahora</div>
-            </div>
-          </div>
-          <div class="post-content">${text}</div>
-        </article>
-      `;
-
-      feed.insertAdjacentHTML('afterbegin', postHTML);
-      input.value = '';
-    }
-
-    function handleLogout() {
-      localStorage.removeItem('sebisx_session');
-      currentUser = null;
-      initApp();
-    }
-
-    window.onload = initApp;
+    // Inicializar renderizado al cargar
+    document.addEventListener('DOMContentLoaded', () => {
+      renderRankBadges(mockDataSoloQ, mockDataFlex);
+    });
   </script>
 </body>
 </html>
