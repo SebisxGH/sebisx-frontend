@@ -490,60 +490,69 @@
     }
 
     function initApp() {
-      const savedSession = localStorage.getItem('sebisx_session');
+  const savedSession = localStorage.getItem('sebisx_session');
 
-      if (!savedSession) {
-        document.getElementById('landing-screen').classList.remove('hidden');
-        document.getElementById('app-dashboard').classList.add('hidden');
-        return;
-      }
+  if (!savedSession) {
+    document.getElementById('landing-screen').classList.remove('hidden');
+    document.getElementById('app-dashboard').classList.add('hidden');
+    return;
+  }
 
-      document.getElementById('landing-screen').classList.add('hidden');
-      document.getElementById('app-dashboard').classList.remove('hidden');
+  document.getElementById('landing-screen').classList.add('hidden');
+  document.getElementById('app-dashboard').classList.remove('hidden');
 
-      currentUser = JSON.parse(savedSession);
-      const profile = currentUser.profile || currentUser;
+  currentUser = JSON.parse(savedSession);
+  const profile = currentUser.profile || currentUser;
 
-      if (profile.username || profile.game_name) {
-        const name = profile.username || profile.game_name;
-        const tag = profile.tag_line ? `#${profile.tag_line}` : '';
-        document.getElementById('nav-username').innerText = `@${name}`;
-        document.getElementById('profile-title').innerHTML = `${name} <span class="user-tagline">${tag}</span>`;
-      }
+  if (profile.username || profile.game_name) {
+    const name = profile.username || profile.game_name;
+    const tag = profile.tag_line ? `#${profile.tag_line}` : '';
+    document.getElementById('nav-username').innerText = `@${name}`;
+    document.getElementById('profile-title').innerHTML = `${name} <span class="user-tagline">${tag}</span>`;
+  }
 
-      if (profile.banner_url) {
-        document.getElementById('profile-banner').src = profile.banner_url;
-      }
+  if (profile.banner_url) {
+    document.getElementById('profile-banner').src = profile.banner_url;
+  }
 
-      // OBTENER RANGOS Y PARTIDAS DESDE EL BACKEND
-      if (profile.game_name && profile.tag_line) {
-        fetch(`${API_URL}/player/${encodeURIComponent(profile.game_name)}/${encodeURIComponent(profile.tag_line)}`)
-          .then(res => res.json())
-          .then(lolData => {
-            if (lolData && lolData.profileIconId) {
-              const iconUrl = `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/${lolData.profileIconId}.png`;
-              document.getElementById('nav-avatar').src = iconUrl;
-              document.getElementById('profile-avatar').src = iconUrl;
-              document.getElementById('composer-avatar').src = iconUrl;
-            }
+  if (profile.game_name && profile.tag_line) {
+    console.log(`Buscando jugador: ${profile.game_name} #${profile.tag_line}`);
 
-            // SOPORTE PARA DIFERENTES ESTRUCTURAS DE RESPUESTA
-            const soloData = lolData.solo || (Array.isArray(lolData.ranks) ? lolData.ranks.find(r => r.queueType === 'RANKED_SOLO_5x5') : null);
-            const flexData = lolData.flex || (Array.isArray(lolData.ranks) ? lolData.ranks.find(r => r.queueType === 'RANKED_FLEX_SR') : null);
+    fetch(`${API_URL}/player/${encodeURIComponent(profile.game_name)}/${encodeURIComponent(profile.tag_line)}`)
+      .then(res => res.json())
+      .then(lolData => {
+        console.log('Respuesta recibida del Backend:', lolData);
 
-            renderRankBadges(soloData, flexData);
-          })
-          .catch((err) => {
-            console.error('Error al obtener datos del jugador:', err);
-            renderRankBadges(null, null);
-          });
+        if (lolData && lolData.profileIconId) {
+          const iconUrl = `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/${lolData.profileIconId}.png`;
+          document.getElementById('nav-avatar').src = iconUrl;
+          document.getElementById('profile-avatar').src = iconUrl;
+          document.getElementById('composer-avatar').src = iconUrl;
+        }
 
-        loadMatchHistory(profile.game_name, profile.tag_line);
-      } else {
+        // Búsqueda exhaustiva del rango en cualquier formato que devuelva el backend
+        let soloData = lolData.solo;
+        let flexData = lolData.flex;
+
+        const rankList = lolData.ranks || lolData.leagueEntries || (Array.isArray(lolData) ? lolData : null);
+
+        if (rankList && Array.isArray(rankList)) {
+          soloData = soloData || rankList.find(r => r.queueType === 'RANKED_SOLO_5x5');
+          flexData = flexData || rankList.find(r => r.queueType === 'RANKED_FLEX_SR');
+        }
+
+        renderRankBadges(soloData, flexData);
+      })
+      .catch(err => {
+        console.error('Error al conectar con la API:', err);
         renderRankBadges(null, null);
-      }
-    }
+      });
 
+    loadMatchHistory(profile.game_name, profile.tag_line);
+  } else {
+    renderRankBadges(null, null);
+  }
+}
     function renderRankBadges(solo, flex) {
       const container = document.getElementById('ranks-container');
       if (!container) return;
