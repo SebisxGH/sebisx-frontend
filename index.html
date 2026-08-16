@@ -530,14 +530,17 @@
               document.getElementById('composer-avatar').src = iconUrl;
             }
 
+            // Extracción segura de datos de ligas (soporta múltiples estructuras del backend)
             let soloData = lolData.solo;
             let flexData = lolData.flex;
 
-            const rankList = lolData.ranks || lolData.leagueEntries || (Array.isArray(lolData) ? lolData : null);
+            if (!soloData && !flexData) {
+              const rankList = lolData.ranks || lolData.leagueEntries || (Array.isArray(lolData) ? lolData : null);
 
-            if (rankList && Array.isArray(rankList)) {
-              soloData = soloData || rankList.find(r => r.queueType === 'RANKED_SOLO_5x5');
-              flexData = flexData || rankList.find(r => r.queueType === 'RANKED_FLEX_SR');
+              if (rankList && Array.isArray(rankList)) {
+                soloData = rankList.find(r => r.queueType === 'RANKED_SOLO_5x5');
+                flexData = rankList.find(r => r.queueType === 'RANKED_FLEX_SR');
+              }
             }
 
             renderRankBadges(soloData, flexData);
