@@ -94,20 +94,62 @@
     .btn-edit-banner { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; backdrop-filter: blur(4px); font-weight: bold; }
     .btn-edit-banner:hover { background: rgba(0,0,0,0.9); }
 
-    .hero-info { padding: 0 20px 20px 20px; display: flex; align-items: flex-end; justify-content: space-between; margin-top: -50px; }
-    .hero-avatar-box { display: flex; align-items: flex-end; gap: 15px; }
+    /* Estructura del Héroe Ajustada */
+    .hero-info { 
+      padding: 0 25px 20px 25px; 
+      display: flex; 
+      align-items: flex-end; 
+      justify-content: space-between; 
+      margin-top: -55px; 
+    }
+
+    .hero-avatar-box { 
+      display: flex; 
+      align-items: flex-end; 
+      gap: 20px; 
+    }
+
     .hero-avatar { 
-      width: 110px; 
-      height: 110px; 
+      width: 120px; 
+      height: 120px; 
       border-radius: 50%; 
       border: 4px solid var(--card-bg); 
       background: var(--bg-dark); 
       object-fit: cover;
       position: relative;
       z-index: 2;
+      flex-shrink: 0;
     }
-    .hero-details h2 { font-size: 1.5rem; display: flex; align-items: center; gap: 6px; }
-    .hero-details p { color: var(--text-sub); font-size: 0.9rem; }
+
+    .hero-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-bottom: 5px;
+    }
+
+    .hero-details h2 { 
+      font-size: 1.6rem; 
+      font-weight: 700;
+      display: flex; 
+      align-items: center; 
+      gap: 8px; 
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .hero-details p { 
+      color: var(--text-sub); 
+      font-size: 0.9rem; 
+      margin-bottom: 4px;
+    }
+
+    #ranks-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
 
     /* Post Composer */
     .post-composer { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; }
@@ -220,11 +262,9 @@
           <div class="hero-avatar-box">
             <img id="profile-avatar" class="hero-avatar" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" onerror="this.src='https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png'" />
             <div class="hero-details">
-              <h2 id="profile-title">Comunidad SEBISX <i class="fa-solid fa-circle-check" style="color:var(--accent); font-size:1rem;"></i></h2>
+              <h2 id="profile-title">Comunidad SEBISX <i class="fa-solid fa-circle-check" style="color:var(--accent); font-size:1.1rem;"></i></h2>
               <p id="profile-subtitle">Inicia sesión para vincular tu cuenta de LoL</p>
-              
-              <!-- Contenedor para los Rangos -->
-              <div id="ranks-container" style="display:flex; gap:10px; margin-top:8px;"></div>
+              <div id="ranks-container"></div>
             </div>
           </div>
         </div>
@@ -357,10 +397,16 @@
       if (!container) return;
 
       const formatRank = (data, title) => {
-        if (!data) return `<span style="background:#0b0f19; border:1px solid var(--card-border); padding:4px 10px; border-radius:12px; font-size:0.75rem; color:var(--text-sub);">${title}: Unranked</span>`;
+        if (!data) {
+          return `
+            <span style="background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; color: var(--text-sub); font-weight: 600;">
+              ${title}: <span style="opacity: 0.7;">Unranked</span>
+            </span>
+          `;
+        }
         return `
-          <span style="background:#0b0f19; border:1px solid var(--card-border); padding:4px 10px; border-radius:12px; font-size:0.75rem; color:var(--accent); font-weight:bold;">
-            ${title}: ${data.tier} ${data.rank} (${data.lp} LP)
+          <span style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; color: var(--accent); font-weight: bold; display: inline-flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-shield"></i> ${title}: ${data.tier} ${data.rank} (${data.lp} LP)
           </span>
         `;
       };
@@ -530,7 +576,7 @@
           return;
         }
 
-        container.innerHTML = ''; // Limpiar loader
+        container.innerHTML = '';
 
         matches.forEach(match => {
           const isWin = match.win;
@@ -571,7 +617,7 @@
 
         if (profile.username) {
           document.getElementById('nav-username').innerText = `@${profile.username}`;
-          document.getElementById('profile-title').innerText = `@${profile.username}`;
+          document.getElementById('profile-title').innerHTML = `@${profile.username} <i class="fa-solid fa-circle-check" style="color:var(--accent); font-size:1.1rem;"></i>`;
         }
         
         if (profile.game_name) {
@@ -586,7 +632,6 @@
         }
 
         if (profile.game_name && profile.tag_line) {
-          // 1. Cargar datos, icono de perfil y rangos
           fetch(`${API_URL}/player/${encodeURIComponent(profile.game_name)}/${encodeURIComponent(profile.tag_line)}`)
             .then(res => res.json())
             .then(lolData => {
@@ -597,12 +642,10 @@
                 document.getElementById('composer-avatar').src = iconUrl;
               }
 
-              // Dibujar medallas de SoloQ y Flex
               renderRankBadges(lolData.solo, lolData.flex);
             })
             .catch(() => console.log('Error al cargar datos e ícono del perfil'));
 
-          // 2. Cargar historial de partidas recientes
           loadMatchHistory(profile.game_name, profile.tag_line);
         }
       }
