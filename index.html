@@ -66,22 +66,23 @@
     /* Feed Central */
     .feed-container { display: flex; flex-direction: column; gap: 20px; }
 
-    /* Profile Banner Header */
+    /* =========================================================
+       NUEVO DISEÑO DE PORTADA Y HÉROE (ESTILO GAMER / RIOT)
+       ========================================================= */
     .profile-hero { 
-      background: var(--card-bg); 
+      background: #0b0f19; 
       border: 1px solid var(--card-border); 
-      border-radius: 12px; 
+      border-radius: 16px; 
       position: relative; 
+      height: 320px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
     }
+
     .banner-img-container { 
-      height: 220px; 
+      height: 100%; 
       width: 100%; 
       position: relative; 
-      background-color: #1e293b; 
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
-      overflow: hidden; 
-      display: block;
     }
 
     .banner-img { 
@@ -91,65 +92,166 @@
       object-position: center;
       display: block;
     }
-    .btn-edit-banner { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; backdrop-filter: blur(4px); font-weight: bold; }
-    .btn-edit-banner:hover { background: rgba(0,0,0,0.9); }
 
-    /* Estructura del Héroe Ajustada */
-    .hero-info { 
-      padding: 0 25px 20px 25px; 
-      display: flex; 
-      align-items: flex-end; 
-      justify-content: space-between; 
-      margin-top: -55px; 
+    .banner-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(9, 13, 22, 0.2) 0%, rgba(9, 13, 22, 0.85) 75%, rgba(9, 13, 22, 0.98) 100%);
+      z-index: 1;
     }
 
-    .hero-avatar-box { 
-      display: flex; 
-      align-items: flex-end; 
-      gap: 20px; 
+    .btn-edit-banner { 
+      position: absolute; 
+      top: 16px; 
+      right: 16px; 
+      background: rgba(15, 23, 42, 0.75); 
+      color: white; 
+      border: 1px solid rgba(255,255,255,0.25); 
+      padding: 8px 16px; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      font-size: 0.85rem; 
+      backdrop-filter: blur(8px); 
+      font-weight: 600; 
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .btn-edit-banner:hover { 
+      background: rgba(255, 255, 255, 0.15); 
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .hero-content-overlay {
+      position: absolute;
+      bottom: 20px;
+      left: 24px;
+      right: 24px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      z-index: 2;
+    }
+
+    .hero-user-group {
+      display: flex;
+      align-items: flex-end;
+      gap: 20px;
+      flex: 1;
+    }
+
+    /* Anillo Neón Alrededor del Avatar */
+    .hero-avatar-ring { 
+      position: relative;
+      width: 125px; 
+      height: 125px; 
+      border-radius: 50%; 
+      padding: 4px;
+      background: linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #06b6d4 100%);
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+      flex-shrink: 0;
     }
 
     .hero-avatar { 
-      width: 120px; 
-      height: 120px; 
+      width: 100%; 
+      height: 100%; 
       border-radius: 50%; 
-      border: 4px solid var(--card-bg); 
-      background: var(--bg-dark); 
       object-fit: cover;
-      position: relative;
-      z-index: 2;
-      flex-shrink: 0;
+      border: 3px solid #090d16;
+      display: block;
     }
 
     .hero-details {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      padding-bottom: 5px;
+      margin-bottom: 6px;
+    }
+
+    .user-role-label {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #c084fc;
+      text-transform: uppercase;
     }
 
     .hero-details h2 { 
-      font-size: 1.6rem; 
-      font-weight: 700;
+      font-size: 2rem; 
+      font-weight: 800;
+      color: #ffffff;
       display: flex; 
-      align-items: center; 
-      gap: 8px; 
-      color: var(--text-main);
-      line-height: 1.2;
+      align-items: baseline; 
+      gap: 6px; 
+      line-height: 1.1;
+      margin: 2px 0 6px 0;
     }
 
-    .hero-details p { 
-      color: var(--text-sub); 
-      font-size: 0.9rem; 
-      margin-bottom: 4px;
+    .user-tagline {
+      color: #a855f7;
+      font-weight: 700;
     }
 
+    .user-glow-line {
+      height: 2px;
+      width: 100%;
+      max-width: 300px;
+      background: linear-gradient(90deg, #a855f7 0%, rgba(168, 85, 247, 0) 100%);
+      border-radius: 2px;
+      box-shadow: 0 0 8px #a855f7;
+    }
+
+    /* Tarjetas de Rango Flotantes */
     #ranks-container {
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 6px;
+      gap: 12px;
+      align-items: center;
     }
+
+    .rank-card-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 18px;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      min-width: 155px;
+    }
+
+    .rank-card-box.soloq {
+      border: 1px solid rgba(168, 85, 247, 0.35);
+    }
+
+    .rank-card-box.flex {
+      border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+
+    .rank-card-box .rank-queue {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      display: block;
+    }
+
+    .rank-card-box.soloq .rank-queue { color: #c084fc; }
+    .rank-card-box.flex .rank-queue { color: #38bdf8; }
+
+    .rank-card-box .rank-tier-text {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+
+    .rank-icon-img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+    }
+    /* ========================================================= */
 
     /* Post Composer */
     .post-composer { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; }
@@ -256,17 +358,23 @@
       <section class="profile-hero">
         <div class="banner-img-container">
           <img id="profile-banner" class="banner-img" src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_0.jpg" alt="Portada de perfil" />
+          <div class="banner-overlay"></div>
           <button class="btn-edit-banner" onclick="openBannerModal()"><i class="fa-solid fa-camera"></i> Cambiar Portada</button>
         </div>
-        <div class="hero-info">
-          <div class="hero-avatar-box">
-            <img id="profile-avatar" class="hero-avatar" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" onerror="this.src='https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png'" />
+        
+        <div class="hero-content-overlay">
+          <div class="hero-user-group">
+            <div class="hero-avatar-ring">
+              <img id="profile-avatar" class="hero-avatar" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png" onerror="this.src='https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png'" />
+            </div>
             <div class="hero-details">
-              <h2 id="profile-title">Comunidad SEBISX <i class="fa-solid fa-circle-check" style="color:var(--accent); font-size:1.1rem;"></i></h2>
-              <p id="profile-subtitle">Inicia sesión para vincular tu cuenta de LoL</p>
-              <div id="ranks-container"></div>
+              <span class="user-role-label">INVOCADOR</span>
+              <h2 id="profile-title">Sebisx <span class="user-tagline">#Faker</span></h2>
+              <div class="user-glow-line"></div>
             </div>
           </div>
+
+          <div id="ranks-container"></div>
         </div>
       </section>
 
@@ -396,22 +504,23 @@
       const container = document.getElementById('ranks-container');
       if (!container) return;
 
-      const formatRank = (data, title) => {
-        if (!data) {
-          return `
-            <span style="background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; color: var(--text-sub); font-weight: 600;">
-              ${title}: <span style="opacity: 0.7;">Unranked</span>
-            </span>
-          `;
-        }
+      const formatCard = (data, queueName, typeClass, iconUrl) => {
+        const tierText = data ? `${data.tier} ${data.rank}` : 'UNRANKED';
         return `
-          <span style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; color: var(--accent); font-weight: bold; display: inline-flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-shield"></i> ${title}: ${data.tier} ${data.rank} (${data.lp} LP)
-          </span>
+          <div class="rank-card-box ${typeClass}">
+            <img src="${iconUrl}" class="rank-icon-img" alt="${queueName}" onerror="this.src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/unranked.png'"/>
+            <div>
+              <span class="rank-queue">${queueName}</span>
+              <span class="rank-tier-text">${tierText}</span>
+            </div>
+          </div>
         `;
       };
 
-      container.innerHTML = formatRank(solo, 'SoloQ') + formatRank(flex, 'Flex');
+      const soloIcon = 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-emblems/master.png';
+      const flexIcon = 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-emblems/diamond.png';
+
+      container.innerHTML = formatCard(solo, 'SOLOQ', 'soloq', soloIcon) + formatCard(flex, 'FLEX', 'flex', flexIcon);
     }
 
     function openBannerModal() {
@@ -610,18 +719,18 @@
     }
 
     function loadUserSession() {
+      renderRankBadges(null, null);
+
       const savedSession = localStorage.getItem('sebisx_session');
       if (savedSession) {
         currentUser = JSON.parse(savedSession);
         const profile = currentUser.profile || currentUser;
 
-        if (profile.username) {
-          document.getElementById('nav-username').innerText = `@${profile.username}`;
-          document.getElementById('profile-title').innerHTML = `@${profile.username} <i class="fa-solid fa-circle-check" style="color:var(--accent); font-size:1.1rem;"></i>`;
-        }
-        
-        if (profile.game_name) {
-          document.getElementById('profile-subtitle').innerText = `Invocador: ${profile.game_name} #${profile.tag_line || ''}`;
+        if (profile.username || profile.game_name) {
+          const name = profile.username || profile.game_name;
+          const tag = profile.tag_line ? `#${profile.tag_line}` : '';
+          document.getElementById('nav-username').innerText = `@${name}`;
+          document.getElementById('profile-title').innerHTML = `${name} <span class="user-tagline">${tag}</span>`;
         }
 
         document.getElementById('btn-logout').classList.remove('hidden');
